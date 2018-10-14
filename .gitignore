@@ -1,2 +1,5 @@
 .idea/
 venv/
+
+# remove this later with removing secrets
+*reader-config.ini
