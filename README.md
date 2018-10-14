@@ -1,1 +1,1 @@
-# sinhalese_language_racism_detection
+# Sinhalese Language based Offensive Detection
