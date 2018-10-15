@@ -9,7 +9,7 @@ from requests_oauthlib import OAuth1
 config_parser = ConfigParser()
 config_parser.read(filenames=['./config/twitter-keys.ini', './config/reader-config.ini'], encoding='utf-8')
 
-url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&tweet_mode=extended')
+url_template = Template(config_parser.get('tweets', 'url_template'))
 
 # set OAuth with twitter configurations
 oauth = OAuth1(
