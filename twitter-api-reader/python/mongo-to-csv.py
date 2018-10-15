@@ -24,4 +24,4 @@ normalized.to_csv(
 )
 
 for i, j in enumerate(sanitized):
-    print(i, j['full_text'])
+    print(i, j['text'])
