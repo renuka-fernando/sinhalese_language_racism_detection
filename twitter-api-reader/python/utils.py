@@ -24,7 +24,7 @@ def get_tweets_by_id(tweet_ids: list, oauth: OAuth1):
     if len(tweet_ids) >= 100:
         raise ValueError("user id count = " + str(len(tweet_ids)) + ": user ids count should be 100 or less than 100")
 
-    url = 'https://api.twitter.com/1.1/statuses/lookup.json?id=' + ','.join(tweet_ids)
+    url = 'https://api.twitter.com/1.1/statuses/lookup.json?tweet_mode=extended&id=' + ','.join(tweet_ids)
     return json.loads(
         requests.get(
             url=url,
@@ -76,15 +76,25 @@ def fill_truncated_tweets(truncated_tweets: list, oauth: OAuth1) -> None:
     :param oauth: OAuth1
     :return: tweets with full text
     """
+    full_tweets = []
     for i in range(0, len(truncated_tweets) // 100):
-        full_tweets = get_tweets_by_id(tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[i: 100 * (i + 1)]],
-                                       oauth=oauth)
-        for j in range(100):
-            truncated_tweets[i * 100 + j]['text'] = full_tweets[j]['text']
+        response_tweets = get_tweets_by_id(
+            tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[i: 100 * (i + 1)]],
+            oauth=oauth)
+        for tweet in response_tweets:
+            full_tweets.append(tweet)
 
-    full_tweets = get_tweets_by_id(
+    response_tweets = get_tweets_by_id(
         tweet_ids=[tweet['id_str'] for tweet in
                    truncated_tweets[len(truncated_tweets) // 100: len(truncated_tweets) % 100]],
         oauth=oauth)
-    for j in range(len(truncated_tweets) % 100):
-        truncated_tweets[len(truncated_tweets) // 100 + j]['text'] = full_tweets[j]
+    for tweet in response_tweets:
+        full_tweets.append(tweet)
+
+    # fill truncated tweets
+    # have to search the tweet because the response is not in the order of the requested tweet ids
+    for truncated_tweet in truncated_tweets:
+        for full_tweet in full_tweets:
+            if truncated_tweet['id'] == full_tweet['id']:
+                truncated_tweet['text'] = full_tweet['full_text']
+                break
