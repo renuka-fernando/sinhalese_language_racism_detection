@@ -2,4 +2,4 @@
 venv/
 
 # remove this later with removing secrets
-*twitter-keys.ini
+twitter-keys.ini

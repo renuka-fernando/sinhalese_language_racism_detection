@@ -24,7 +24,13 @@ def get_tweets_of_users(user_ids: list, oauth: OAuth1):
     )
 
 
-def search_tweets_standard_api(query: str, oauth: OAuth1):
+def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
+    """
+    retrieve tweets using standard API
+    :param query: query to search
+    :param oauth: OAuth1
+    :return: tweets
+    """
     url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&tweet_mode=extended')
     return json.loads(
         requests.get(
@@ -34,7 +40,13 @@ def search_tweets_standard_api(query: str, oauth: OAuth1):
     )['statuses']
 
 
-def search_tweets_premium_api(json_payload: json, oauth: OAuth1):
+def search_tweets_premium_api(json_payload: json, oauth: OAuth1) -> list:
+    """
+    retrieve tweets using premium API
+    :param json_payload: Json Payload for the POST request
+    :param oauth: OAuth1
+    :return: tweets
+    """
     url = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
     return json.loads(
         requests.post(
