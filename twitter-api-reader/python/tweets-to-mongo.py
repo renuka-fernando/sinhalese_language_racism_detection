@@ -14,6 +14,7 @@ oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
                resource_owner_key=config_parser.get('twitter', 'resource_owner_key'),
                resource_owner_secret=config_parser.get('twitter', 'resource_owner_secret'))
 
+# read twitter API
 data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
                                         oauth=oauth)
 

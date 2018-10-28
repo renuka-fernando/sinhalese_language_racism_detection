@@ -1,8 +1,17 @@
+import enum
 import json
 from string import Template
 
 import requests
 from requests_oauthlib import OAuth1
+
+
+class TweeterPremiumAPI(enum.Enum):
+    """
+    Twitter API resource
+    """
+    day_30 = "30day"
+    full_archive = "fullarchive"
 
 
 def get_tweets_of_users(user_ids: list, oauth: OAuth1):
@@ -40,14 +49,16 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     )['statuses']
 
 
-def search_tweets_premium_api(json_payload: json, oauth: OAuth1) -> list:
+def search_tweets_premium_api(json_payload: json, oauth: OAuth1,
+                              api: TweeterPremiumAPI = TweeterPremiumAPI.day_30) -> list:
     """
     retrieve tweets using premium API
     :param json_payload: Json Payload for the POST request
     :param oauth: OAuth1
+    :param api: 30day or full_archive twitter API
     :return: tweets
     """
-    url = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
+    url = "https://api.twitter.com/1.1/tweets/search/%s/dev.json" % api.value
     return json.loads(
         requests.post(
             url=url,
