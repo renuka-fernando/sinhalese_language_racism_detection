@@ -41,7 +41,7 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     :return: tweets
     """
     # without "tweet_mode=extended"
-    url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=15')
+    url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=100')
     return json.loads(
         requests.get(
             url=url_template.substitute(query=query),
@@ -69,6 +69,17 @@ def search_tweets_premium_api(json_payload: json, oauth: OAuth1,
     )['results']
 
 
+def _set_full_tweet_text(truncated_tweets: list, full_tweets: list) -> None:
+    # have to search the tweet because the response is not in the order of the requested tweet ids
+    for truncated_tweet in truncated_tweets:
+        for full_tweet in full_tweets:
+            if truncated_tweet['id'] == full_tweet['id']:
+                truncated_tweet['text'] = full_tweet['full_text']
+                break
+        else:
+            print("Full tweet did not found truncated tweet (id): " + truncated_tweet['id_str'])
+
+
 def fill_truncated_tweets(truncated_tweets: list, oauth: OAuth1) -> None:
     """
     fill truncated tweets with full tweet text
@@ -76,25 +87,16 @@ def fill_truncated_tweets(truncated_tweets: list, oauth: OAuth1) -> None:
     :param oauth: OAuth1
     :return: tweets with full text
     """
-    full_tweets = []
     for i in range(0, len(truncated_tweets) // 100):
-        response_tweets = get_tweets_by_id(
+        full_tweets = get_tweets_by_id(
             tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[i: 100 * (i + 1)]],
             oauth=oauth)
-        for tweet in response_tweets:
-            full_tweets.append(tweet)
+        # fill truncated tweets
+        _set_full_tweet_text(truncated_tweets[i: 100 * (i + 1)], full_tweets)
 
-    response_tweets = get_tweets_by_id(
+    full_tweets = get_tweets_by_id(
         tweet_ids=[tweet['id_str'] for tweet in
                    truncated_tweets[len(truncated_tweets) // 100: len(truncated_tweets) % 100]],
         oauth=oauth)
-    for tweet in response_tweets:
-        full_tweets.append(tweet)
-
     # fill truncated tweets
-    # have to search the tweet because the response is not in the order of the requested tweet ids
-    for truncated_tweet in truncated_tweets:
-        for full_tweet in full_tweets:
-            if truncated_tweet['id'] == full_tweet['id']:
-                truncated_tweet['text'] = full_tweet['full_text']
-                break
+    _set_full_tweet_text(truncated_tweets[len(truncated_tweets) // 100: len(truncated_tweets) % 100], full_tweets)
