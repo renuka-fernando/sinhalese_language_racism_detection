@@ -77,7 +77,7 @@ def _set_full_tweet_text(truncated_tweets: list, full_tweets: list) -> None:
                 truncated_tweet['text'] = full_tweet['full_text']
                 break
         else:
-            print("Full tweet did not found truncated tweet (id): " + truncated_tweet['id_str'])
+            print("Full tweet did not found for the truncated tweet (id): " + truncated_tweet['id_str'])
 
 
 def fill_truncated_tweets(truncated_tweets: list, oauth: OAuth1) -> None:
