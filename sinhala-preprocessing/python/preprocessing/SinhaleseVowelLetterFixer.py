@@ -46,6 +46,7 @@ class SinhaleseVowelLetterFixer:
 
 
 # Test
-text = "ද" + "ෙ" + "ෙ" + "වය, ‌‌"
-fixed_text = SinhaleseVowelLetterFixer.get_fixed_text(text)
-assert "දෛවය" == fixed_text
+wrong_text = "ද" + "ෙ" + "ෙ" + "ව" + "ය"
+correct_text = "ද" + "ෛ" + "ව" + "ය"
+corrected_text = SinhaleseVowelLetterFixer.get_fixed_text(wrong_text)
+assert correct_text == corrected_text
