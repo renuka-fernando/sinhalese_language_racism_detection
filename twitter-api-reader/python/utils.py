@@ -42,12 +42,11 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     """
     # without "tweet_mode=extended"
     url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=100')
-    return json.loads(
-        requests.get(
+    data = requests.get(
             url=url_template.substitute(query=query),
             auth=oauth
         ).text
-    )['statuses']
+    return json.loads(data)['statuses']
 
 
 def search_tweets_premium_api(json_payload: json, oauth: OAuth1,
@@ -60,13 +59,12 @@ def search_tweets_premium_api(json_payload: json, oauth: OAuth1,
     :return: tweets
     """
     url = "https://api.twitter.com/1.1/tweets/search/%s/dev.json" % api.value
-    return json.loads(
-        requests.post(
+    data = requests.post(
             url=url,
             json=json_payload,
             auth=oauth
         ).text
-    )['results']
+    return json.loads(data)['results']
 
 
 def _set_full_tweet_text(truncated_tweets: list, full_tweets: list) -> None:
