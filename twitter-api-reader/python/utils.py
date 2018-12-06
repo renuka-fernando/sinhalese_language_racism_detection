@@ -14,6 +14,10 @@ class TweeterPremiumAPI(enum.Enum):
     full_archive = "fullarchive"
 
 
+class TweetQueryError(Exception):
+    pass
+
+
 def get_tweets_by_id(tweet_ids: list, oauth: OAuth1):
     """
     Get tweets of given list of user ids
@@ -43,9 +47,9 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     # without "tweet_mode=extended"
     url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=100')
     data = requests.get(
-            url=url_template.substitute(query=query),
-            auth=oauth
-        ).text
+        url=url_template.substitute(query=query),
+        auth=oauth
+    ).text
     return json.loads(data)['statuses']
 
 
@@ -59,12 +63,15 @@ def search_tweets_premium_api(json_payload: json, oauth: OAuth1,
     :return: tweets
     """
     url = "https://api.twitter.com/1.1/tweets/search/%s/dev.json" % api.value
-    data = requests.post(
-            url=url,
-            json=json_payload,
-            auth=oauth
-        ).text
-    return json.loads(data)['results']
+    data = json.loads(requests.post(
+        url=url,
+        json=json_payload,
+        auth=oauth
+    ).text)
+    try:
+        return data['results']
+    except KeyError:
+        raise TweetQueryError(data['error']['message'])
 
 
 def _set_full_tweet_text(truncated_tweets: list, full_tweets: list) -> None:
@@ -87,14 +94,12 @@ def fill_truncated_tweets(truncated_tweets: list, oauth: OAuth1) -> None:
     """
     for i in range(0, len(truncated_tweets) // 100):
         full_tweets = get_tweets_by_id(
-            tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[i: 100 * (i + 1)]],
+            tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[100 * i: 100 * (i + 1)]],
             oauth=oauth)
         # fill truncated tweets
-        _set_full_tweet_text(truncated_tweets[i: 100 * (i + 1)], full_tweets)
+        _set_full_tweet_text(truncated_tweets[100 * i: 100 * (i + 1)], full_tweets)
 
     full_tweets = get_tweets_by_id(
-        tweet_ids=[tweet['id_str'] for tweet in
-                   truncated_tweets[len(truncated_tweets) // 100: len(truncated_tweets) % 100]],
-        oauth=oauth)
+        tweet_ids=[tweet['id_str'] for tweet in truncated_tweets[-(len(truncated_tweets) % 100):]], oauth=oauth)
     # fill truncated tweets
-    _set_full_tweet_text(truncated_tweets[len(truncated_tweets) // 100: len(truncated_tweets) % 100], full_tweets)
+    _set_full_tweet_text(truncated_tweets[-(len(truncated_tweets) % 100):], full_tweets)

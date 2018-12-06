@@ -24,4 +24,4 @@ normalized.to_csv(
 )
 
 for i, j in enumerate(sanitized):
-    print(i, j['id'], j['user']['screen_name'], j['text'])
+    print(i, j['id'], j['user']['screen_name'], j['truncated'], j['text'])

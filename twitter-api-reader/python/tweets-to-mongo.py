@@ -1,3 +1,4 @@
+import json
 from configparser import ConfigParser
 
 from pymongo import MongoClient
@@ -17,6 +18,9 @@ oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
 # read twitter API
 data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
                                         oauth=oauth)
+# data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
+#                                        api=utils.TweeterPremiumAPI.day_30,
+#                                        oauth=oauth)
 
 # Mongo Client
 mongo_client = MongoClient(host=config_parser.get('mongo', 'host'),
