@@ -20,7 +20,7 @@ class TweetQueryError(Exception):
 
 def get_tweets_by_id(tweet_ids: list, oauth: OAuth1):
     """
-    Get tweets of given list of user ids
+    Get tweets of given list of tweet ids
     :param tweet_ids: list of tweet ids
     :param oauth: OAuth1 object for authentication
     :return: list of tweets
@@ -29,6 +29,22 @@ def get_tweets_by_id(tweet_ids: list, oauth: OAuth1):
         raise ValueError("user id count = " + str(len(tweet_ids)) + ": user ids count should be 100 or less than 100")
 
     url = 'https://api.twitter.com/1.1/statuses/lookup.json?tweet_mode=extended&id=' + ','.join(tweet_ids)
+    return json.loads(
+        requests.get(
+            url=url,
+            auth=oauth
+        ).text
+    )
+
+
+def get_tweets_by_user_id(user_id: str, oauth: OAuth1) -> list:
+    """
+    Get tweets of given user id
+    :param user_id: user id
+    :param oauth: OAuth1 object for authentication
+    :return: list of tweets
+    """
+    url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?count=200&user_id=' + user_id
     return json.loads(
         requests.get(
             url=url,
