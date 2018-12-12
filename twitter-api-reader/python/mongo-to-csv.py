@@ -14,8 +14,12 @@ data = tweets.find({})
 
 # load MongoDB data as JSON data and flatten using json_normalize
 sanitized = json.loads(json_util.dumps(data))
-normalized = json_normalize(sanitized)
 
+# replace new line with space
+for i, j in enumerate(sanitized):
+    j['text'] = '"' + j['text'].strip().replace("\n", " ") + '"'
+
+normalized = json_normalize(sanitized)
 normalized.to_csv(
     path_or_buf="../../data-set/data-set.csv",
     columns=[column.strip() for column in config_parser.get('csv', 'columns').split(',')],
