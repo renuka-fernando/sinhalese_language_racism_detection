@@ -176,8 +176,13 @@ public class SinhalaTokenizer {
             }
         }
 
+        // Remove URLs
         String urlRegex = "(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?";
         str = str.replaceAll(urlRegex, "");
+
+        // Remove retweets (this is for twitter)
+        String retweetRegex = "^RT @.*:";
+        str = str.replaceAll(retweetRegex, "");
 
         String parts[] = str.split(wordTokenizerDelims);
         LinkedList<String> list = new LinkedList<String>();
@@ -264,7 +269,7 @@ public class SinhalaTokenizer {
 //        String text = "මෙම උපාධිධාරියා පිළිබඳව තොරතුරු දැනගත් වහාම අධ්‍යාපන" +
 //                      " අමාත්‍යාංශ ලේකම් එච්. එම්. ගුණසේකර මහතා හා Renuka ඔහු අමාත්‍යාංශයට කැඳවා පරීක්‌ෂා කර තිබේ";
 
-        String text = "ඔට්ටුව මතක් වෙන htt://www.google.com ගා^නේ කොන්ඩේ පෙන්න  පෙන්නා dp දානවා...\uD83D\uDE02\uD83D\uDE02 අපි බලමුකො..............ඉස්සරහට කවුද දිනන්නේ කියලා....ටිපිටිප් එකක් අරන් දෙන්න වෙනවා ඕන්.. https://t.co/wGC6R8N8g5";
+        String text = "RT @milindarj: බ්\u200Dරහස්පතින්දා හවස 6.30ට මම එනවා සිරස 'දවස' දේශපාලන සංවාදයට. #SriLanka #LetMeVote #PresidentialFirst #RiseUpSL @NewsfirstSL…";
         LinkedList<String> words = st.splitWords(text);
         System.out.println("words:");
         for (String s : words) {
