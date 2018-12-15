@@ -2,6 +2,8 @@ import re
 
 import emoji
 
+from preprocessing.SinhaleseCharacters import get_simplified_character
+
 
 def replace_url(text: str) -> str:
     """
@@ -21,7 +23,7 @@ def remove_retweet_state(text: str) -> str:
     return re.sub(r'^RT @\w*: ', '', text)
 
 
-def replace_mension(text: str) -> str:
+def replace_mention(text: str) -> str:
     return re.sub(r'@\w*', 'PERSON', text)
 
 
@@ -52,7 +54,15 @@ def set_spaces_among_emojis(text: str) -> str:
     return modified_text
 
 
+def simplify_sinhalese_text(text: str) -> str:
+    modified_text = ""
+    for c in text:
+        modified_text += get_simplified_character(c)
+    return modified_text
+
+
 txt = "RT @sam92ky: කියවන්න..රටේ Renuka දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
       "හස්බන්ඩ් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
-print(split_tokens(set_spaces_among_emojis(replace_url(replace_mension(remove_retweet_state(txt))))))
+print(split_tokens(set_spaces_among_emojis(replace_url(replace_mention(remove_retweet_state(txt.lower()))))))
+print(simplify_sinhalese_text('යාළුවෙ'))

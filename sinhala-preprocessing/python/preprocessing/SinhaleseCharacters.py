@@ -58,6 +58,25 @@ vowel_sign_fix_dict = {
     "ෟ" + "ො": "ෞ",
 }
 
+simplify_characters_dict = {
+    "ඛ": "ක",
+    "ඝ": "ග",
+    "ඟ": "ග",
+    "ඡ": "ච",
+    "ඣ": "ජ",
+    "ඦ": "ජ",
+    "ඤ": "ඥ",
+    "ඨ": "ට",
+    "ඪ": "ඩ",
+    "ණ": "න",
+    "ඳ": "ද",
+    "ඵ": "ප",
+    "භ": "බ",
+    "ඹ": "බ",
+    "ශ": "ෂ",
+    "ළ": "ල"
+}
+
 
 def is_sinhalese_letter(char: str) -> bool:
     return char in sinhalese_chars
@@ -69,3 +88,12 @@ def is_sinhalese_vowel(char: str) -> bool:
 
 def get_fixed_vowel(vowel: str) -> str:
     return vowel_sign_fix_dict[vowel]
+
+
+def get_simplified_character(character: str) -> str:
+    if len(character) != 1:
+        raise TypeError("character should be a string with length 1")
+    try:
+        return simplify_characters_dict[character]
+    except KeyError:
+        return character
