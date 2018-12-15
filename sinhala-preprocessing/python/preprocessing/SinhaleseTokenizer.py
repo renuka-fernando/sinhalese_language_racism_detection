@@ -55,14 +55,40 @@ def set_spaces_among_emojis(text: str) -> str:
 
 
 def simplify_sinhalese_text(text: str) -> str:
+    """
+    simplify
+    :param text:
+    :return:
+    """
     modified_text = ""
     for c in text:
         modified_text += get_simplified_character(c)
     return modified_text
 
 
+def stem_word(word: str) -> str:
+    """
+    Stemming words
+    :param word: word
+    :return: stemmed word
+    """
+    if len(word) < 4:
+        return word
+
+    # remove 'ට'
+    if word[-1] == 'ට':
+        return word[:-1]
+
+    # remove 'ගෙ' (instead of ගේ because this step comes after simplifying text)
+    if word[-1] == 'ෙ' and word[-2] == "ග":
+        return word[:-2]
+
+    # else
+    return word
+
+
 txt = "RT @sam92ky: කියවන්න..රටේ Renuka දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
-      "හස්බන්ඩ් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
-print(split_tokens(set_spaces_among_emojis(replace_url(replace_mention(remove_retweet_state(simplify_sinhalese_text(txt.lower())))))))
-print(simplify_sinhalese_text('මූහූදට'))
+      "හස්බන්ඩ්ගේ උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
+print([stem_word(token) for token in split_tokens(set_spaces_among_emojis(replace_url(replace_mention(
+    simplify_sinhalese_text(remove_retweet_state(txt).lower())))))])
