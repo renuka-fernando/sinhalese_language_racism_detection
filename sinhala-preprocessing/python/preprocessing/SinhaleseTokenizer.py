@@ -64,5 +64,5 @@ def simplify_sinhalese_text(text: str) -> str:
 txt = "RT @sam92ky: කියවන්න..රටේ Renuka දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
       "හස්බන්ඩ් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
-print(split_tokens(set_spaces_among_emojis(replace_url(replace_mention(remove_retweet_state(txt.lower()))))))
-print(simplify_sinhalese_text('යාළුවෙ'))
+print(split_tokens(set_spaces_among_emojis(replace_url(replace_mention(remove_retweet_state(simplify_sinhalese_text(txt.lower())))))))
+print(simplify_sinhalese_text('මූහූදට'))
