@@ -1,5 +1,12 @@
 # Sinhalese Language based Offensive Detection
 
+## Requirements
+- pymongo
+- pandas
+- requests_oauthlib
+- emoji `pip install emoji`
+
+
 ## Restore Mongo DB with twitter data
 
 ### Backup Mongo DB
