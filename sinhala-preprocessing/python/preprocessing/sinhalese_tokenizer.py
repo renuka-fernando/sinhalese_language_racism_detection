@@ -2,7 +2,7 @@ import re
 
 import emoji
 
-from preprocessing.SinhaleseCharacters import get_simplified_character
+from preprocessing.sinhalese_characters import get_simplified_character
 
 
 def replace_url(text: str) -> str:
@@ -99,8 +99,12 @@ def stem_word(word: str) -> str:
     return word
 
 
-txt = "RT @sam92ky: කියවන්න..රටේ Renuka තාත්තටත් දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
-      "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
-      "හස්බන්ඩ්ගේ දවසක් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
-print([stem_word(token) for token in split_tokens(set_spaces_among_emojis(replace_url(replace_mention(
-    simplify_sinhalese_text(remove_retweet_state(txt).lower())))))])
+def tokenize(text: str) -> list:
+    return [stem_word(token) for token in split_tokens(set_spaces_among_emojis(replace_url(replace_mention(
+        simplify_sinhalese_text(remove_retweet_state(text).lower())))))]
+
+
+# txt = "RT @sam92ky: කියවන්න..රටේ Renuka තාත්තටත් දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
+#       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
+#       "හස්බන්ඩ්ගේ දවසක් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
+# print(tokenize(txt))

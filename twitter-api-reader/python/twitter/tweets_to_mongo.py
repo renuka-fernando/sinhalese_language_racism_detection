@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from pymongo import MongoClient
 from requests_oauthlib import OAuth1
 
-import utils
+from twitter import utils
 
 config_parser = ConfigParser()
 config_parser.read(filenames=['./config/twitter-keys.ini', './config/reader-config.ini'], encoding='utf-8')

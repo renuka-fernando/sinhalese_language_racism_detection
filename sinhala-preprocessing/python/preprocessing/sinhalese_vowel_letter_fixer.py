@@ -1,4 +1,4 @@
-from preprocessing.SinhaleseCharacters import get_fixed_vowel, is_sinhalese_vowel, is_sinhalese_letter
+from preprocessing.sinhalese_characters import get_fixed_vowel, is_sinhalese_vowel, is_sinhalese_letter
 
 
 class SinhaleseVowelLetterFixer:
