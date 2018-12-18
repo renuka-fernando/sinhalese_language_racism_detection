@@ -79,16 +79,28 @@ def stem_word(word: str) -> str:
     if word[-1] == 'ට':
         return word[:-1]
 
+    # remove 'ද'
+    if word[-1] == 'ද':
+        return word[:-1]
+
+    # remove 'ටත්'
+    if word[-3:] == 'ටත්':
+        return word[:-3]
+
+    # remove 'ක්'
+    if word[-2:] == 'ක්':
+        return word[:-2]
+
     # remove 'ගෙ' (instead of ගේ because this step comes after simplifying text)
-    if word[-1] == 'ෙ' and word[-2] == "ග":
+    if word[-2:] == 'ගෙ':
         return word[:-2]
 
     # else
     return word
 
 
-txt = "RT @sam92ky: කියවන්න..රටේ Renuka දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
+txt = "RT @sam92ky: කියවන්න..රටේ Renuka තාත්තටත් දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
-      "හස්බන්ඩ්ගේ උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
+      "හස්බන්ඩ්ගේ දවසක් උනත් {එකයි}***-+නොවුනත් [එකයි අපිට] සෝන්ග් 😂😂😂🌺 පුකද යාලුවේ.. 😜 #RT #Help"
 print([stem_word(token) for token in split_tokens(set_spaces_among_emojis(replace_url(replace_mention(
     simplify_sinhalese_text(remove_retweet_state(txt).lower())))))])
