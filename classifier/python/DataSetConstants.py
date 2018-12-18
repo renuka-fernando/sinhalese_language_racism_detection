@@ -1,0 +1,4 @@
+TWEET_ID = 1
+USER_ID = 2
+TEXT = 4
+CLASS = 5
