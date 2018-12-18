@@ -1,6 +1,6 @@
 import pandas as pd
 
-from classifier.utils import tokenize_corpus
+from classifier.utils import tokenize_corpus, build_dictionary
 from classifier.data_set_constants import *
 
 data_frame = pd.read_csv("../../../data-set/final-data-set.csv")
@@ -13,4 +13,5 @@ data_set = data_frame.values
 #     print(index, tweet)
 
 corpus_token = tokenize_corpus(data_set[:, DATA_SET_TEXT])
-print(corpus_token)
+dictionary = build_dictionary(corpus_token)
+print(dictionary)
