@@ -28,3 +28,12 @@ def build_dictionary(corpus_token: list) -> dict:
         dictionary[unique_words[frequency_index]] = index + 2
 
     return dictionary
+
+
+def transform_to_dictionary_values(corpus_token: list, dictionary: dict) -> list:
+    x_corpus = []
+    for tweet in corpus_token:
+        # 1 is for unknown (not in dictionary)
+        x_corpus.append([dictionary[token] if token in dictionary else 1 for token in tweet])
+
+    return x_corpus
