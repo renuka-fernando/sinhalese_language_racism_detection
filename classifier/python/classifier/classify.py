@@ -1,5 +1,5 @@
 import logging
-
+from keras.preprocessing import sequence
 import pandas as pd
 
 from classifier.data_set_constants import *
@@ -26,6 +26,9 @@ logging.info("Transforming the corpus to dictionary values")
 x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 
 y_corpus = transform_class_to_one_hot_representation(data_set[:, DATA_SET_CLASS])
-get_calculated_user_profile(data_set[:, DATA_SET_USER_ID], data_set[:, DATA_SET_CLASS])
+user_profile = get_calculated_user_profile(data_set[:, DATA_SET_USER_ID], data_set[:, DATA_SET_CLASS])
 
-print(y_corpus)
+# padding with zeros if not enough and else drop right words
+x_corpus = sequence.pad_sequences(x_corpus, maxlen=MAX_WORD_COUNT)
+
+print(x_corpus)
