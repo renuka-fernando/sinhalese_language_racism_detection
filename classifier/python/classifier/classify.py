@@ -1,6 +1,11 @@
 import logging
-from keras.models import Sequential
+
 import pandas as pd
+from keras import regularizers
+from keras.layers import Dense, LSTM
+from keras.layers.embeddings import Embedding
+from keras.models import Sequential
+from keras.optimizers import Adam
 from keras.preprocessing import sequence
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
@@ -51,6 +56,16 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
+    model.add(Embedding(input_dim=5000, output_dim=30, input_length=MAX_WORD_COUNT))
+    model.add(LSTM(150))
+    model.add(Dense(units=MAX_WORD_COUNT, activation='relu', W_regularizer=regularizers.l2(0.4)))
+    model.add(Dense(units=100, activation='relu', W_regularizer=regularizers.l2(0.8)))
+    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.1)))
+    adam_optimizer = Adam(lr=0.008)
+    model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
+    print(model.summary())
 
-print(x_corpus)
+    history = model.fit(x=x_train, y=y_train, nb_epoch=20, batch_size=50, validation_data=(x_valid, y_valid), verbose=1,
+                        shuffle=False)
+    print(history.history['val_acc'])
