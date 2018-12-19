@@ -8,8 +8,8 @@ def tokenize_corpus(corpus: list) -> list:
     return [tokenize(text) for text in corpus]
 
 
-def transform_class_to_one_hot_representation(classes: list) -> list:
-    return [DATA_SET_CLASSES[cls] for cls in classes]
+def transform_class_to_one_hot_representation(classes: list):
+    return np.array([DATA_SET_CLASSES[cls] for cls in classes])
 
 
 def build_dictionary(corpus_token: list) -> dict:

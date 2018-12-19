@@ -1,6 +1,9 @@
 import logging
-from keras.preprocessing import sequence
+from keras.models import Sequential
 import pandas as pd
+from keras.preprocessing import sequence
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
 
 from classifier.data_set_constants import *
 from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, \
@@ -28,7 +31,26 @@ x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 y_corpus = transform_class_to_one_hot_representation(data_set[:, DATA_SET_CLASS])
 user_profile = get_calculated_user_profile(data_set[:, DATA_SET_USER_ID], data_set[:, DATA_SET_CLASS])
 
-# padding with zeros if not enough and else drop right words
+# padding with zeros if not enough and else drop left words
 x_corpus = sequence.pad_sequences(x_corpus, maxlen=MAX_WORD_COUNT)
+
+# shuffling data for 5-fold cross validation
+k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
+# to split raw format (integer) is required
+y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
+
+for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_raw):
+    x_train_n_validation = x_corpus[train_n_validation_indexes]
+    y_train_n_validation = y_corpus[train_n_validation_indexes]
+    x_test = x_corpus[test_indexes]
+    y_test = y_corpus[test_indexes]
+
+    # train and validation data sets
+    x_train, x_valid, y_train, y_valid = train_test_split(x_train_n_validation, y_train_n_validation, test_size=0.12,
+                                                          random_state=94)
+
+    # create the model
+    model = Sequential()
+
 
 print(x_corpus)
