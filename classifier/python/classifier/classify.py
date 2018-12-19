@@ -1,8 +1,10 @@
 import logging
+
 import pandas as pd
 
-from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, transform_class_to_onehot_representation
 from classifier.data_set_constants import *
+from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, \
+    transform_class_to_one_hot_representation, get_calculated_user_profile
 
 logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
 data_frame = pd.read_csv("../../../data-set/final-data-set.csv")
@@ -23,5 +25,7 @@ dictionary = build_dictionary(corpus_token)
 logging.info("Transforming the corpus to dictionary values")
 x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 
-y_corpus = transform_class_to_onehot_representation(data_set[:, DATA_SET_CLASS])
+y_corpus = transform_class_to_one_hot_representation(data_set[:, DATA_SET_CLASS])
+get_calculated_user_profile(data_set[:, DATA_SET_USER_ID], data_set[:, DATA_SET_CLASS])
+
 print(y_corpus)
