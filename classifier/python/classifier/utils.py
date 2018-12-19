@@ -1,10 +1,15 @@
 import numpy as np
 
+from classifier.data_set_constants import DATA_SET_CLASSES
 from preprocessing.sinhalese_tokenizer import tokenize
 
 
 def tokenize_corpus(corpus: list) -> list:
     return [tokenize(text) for text in corpus]
+
+
+def transform_class_to_onehot_representation(classes: list) -> list:
+    return [DATA_SET_CLASSES[cls] for cls in classes]
 
 
 def build_dictionary(corpus_token: list) -> dict:

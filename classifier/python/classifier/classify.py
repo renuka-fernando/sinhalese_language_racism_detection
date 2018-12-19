@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 
-from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values
+from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, transform_class_to_onehot_representation
 from classifier.data_set_constants import *
 
 logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
@@ -23,4 +23,5 @@ dictionary = build_dictionary(corpus_token)
 logging.info("Transforming the corpus to dictionary values")
 x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 
-print(x_corpus)
+y_corpus = transform_class_to_onehot_representation(data_set[:, DATA_SET_CLASS])
+print(y_corpus)
