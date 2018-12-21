@@ -62,11 +62,14 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     """
     # without "tweet_mode=extended"
     url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=100')
-    data = requests.get(
+    data = json.loads(requests.get(
         url=url_template.substitute(query=query),
         auth=oauth
-    ).text
-    return json.loads(data)['statuses']
+    ).text)
+    try:
+        return data['statuses']
+    except KeyError:
+        raise TweetQueryError(" AND ".join([err['message'] for err in data['errors']]))
 
 
 def search_tweets_premium_api(json_payload: json, oauth: OAuth1,

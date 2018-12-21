@@ -6,7 +6,7 @@ from requests_oauthlib import OAuth1
 from twitter import utils
 
 config_parser = ConfigParser()
-config_parser.read(filenames=['./config/twitter-keys.ini', './config/reader-config.ini'], encoding='utf-8')
+config_parser.read(filenames=['../config/twitter-keys.ini', '../config/reader-config.ini'], encoding='utf-8')
 
 # set OAuth with twitter configurations
 oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
