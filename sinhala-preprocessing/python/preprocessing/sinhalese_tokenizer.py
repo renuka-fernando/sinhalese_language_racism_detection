@@ -34,9 +34,10 @@ def split_tokens(text: str) -> list:
     :return: token list
     """
     # text characters to split is from: https://github.com/madurangasiriwardena/corpus.sinhala.tools
+    emojis = ''.join(emj for emj in emoji.UNICODE_EMOJI.keys())
     return [token for token in
-            re.split(r'[., ¸‚\"/|—¦”‘\'“’´!@#$%^&*+\-£?˜()\[\]{\}:;–Ê  �‪‬‏0123456789]', text) if
-            token != ""]
+            re.split(r'[., ¸‚\"/|—¦”‘\'“’´!@#$%^&*+\-£?˜()\[\]{\}:;–Ê  �‪‬‏0123456789' + emojis + ']', text)
+            if token != ""]
 
 
 def set_spaces_among_emojis(text: str) -> str:
@@ -108,9 +109,8 @@ def stem_word(word: str) -> str:
 
 
 def tokenize(text: str) -> list:
-    return [stem_word(token) for token in split_tokens(set_spaces_among_emojis(replace_url(replace_mention(
-        simplify_sinhalese_text(remove_retweet_state(text).lower())))))]
-
+    return [stem_word(token) for token in split_tokens(replace_url(replace_mention(
+        simplify_sinhalese_text(remove_retweet_state(text).lower()))))]
 
 # txt = "RT @sam92ky: කියවන්න..රටේ Renuka තාත්තටත් දුප්පතාට @indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි " \
 #       "මෙ https://t.co/xDrwvDa3yr ඔක්කොම දරුවෙක් කොල්ලෙක් https://t.co/xDrwvDa3yr case. Sighhhhhhhh  😢 " \
