@@ -57,16 +57,16 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
-    model.add(Embedding(input_dim=3000, output_dim=10, input_length=MAX_WORD_COUNT))
+    model.add(Embedding(input_dim=4000, output_dim=30, input_length=MAX_WORD_COUNT))
     model.add(LSTM(250))
-    model.add(Dense(units=60, activation='relu', W_regularizer=regularizers.l2(0.1)))
-    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.2)))
+    model.add(Dense(units=30, activation='relu', W_regularizer=regularizers.l2(0.9)))
+    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.1)))
     adam_optimizer = Adam(lr=0.0002)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
     print(model.summary())
 
-    history = model.fit(x=x_train, y=y_train, nb_epoch=20, batch_size=1, validation_data=(x_valid, y_valid), verbose=1,
+    history = model.fit(x=x_train, y=y_train, nb_epoch=60, batch_size=1, validation_data=(x_valid, y_valid), verbose=1,
                         shuffle=False)
 
     # Plot training & validation accuracy values
