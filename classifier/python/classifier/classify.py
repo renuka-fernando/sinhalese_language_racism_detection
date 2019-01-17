@@ -31,6 +31,9 @@ corpus_token = tokenize_corpus(data_set[:, DATA_SET_TEXT])
 logging.info("Building the dictionary")
 dictionary = build_dictionary(corpus_token)
 
+# to get sentence back
+# ' '.join([list(dictionary.keys())[i-2] for i in x_test[0] if i > 1])
+
 logging.info("Transforming the corpus to dictionary values")
 x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 
@@ -57,16 +60,16 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
-    model.add(Embedding(input_dim=4000, output_dim=30, input_length=MAX_WORD_COUNT))
+    model.add(Embedding(input_dim=6000, output_dim=30, input_length=MAX_WORD_COUNT))
     model.add(LSTM(250))
-    model.add(Dense(units=30, activation='relu', W_regularizer=regularizers.l2(0.9)))
-    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.1)))
+    model.add(Dense(units=30, activation='relu', W_regularizer=regularizers.l2(0.02)))
+    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.005)))
     adam_optimizer = Adam(lr=0.0002)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
     print(model.summary())
 
-    history = model.fit(x=x_train, y=y_train, nb_epoch=60, batch_size=1, validation_data=(x_valid, y_valid), verbose=1,
+    history = model.fit(x=x_train, y=y_train, nb_epoch=20, batch_size=1, validation_data=(x_valid, y_valid), verbose=1,
                         shuffle=False)
 
     # Plot training & validation accuracy values

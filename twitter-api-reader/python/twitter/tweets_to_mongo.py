@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 
+from pandas import json
 from pymongo import MongoClient
 from requests_oauthlib import OAuth1
 
@@ -16,13 +17,13 @@ oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
 
 # read twitter API
 # ##### Standard API #####
-data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
-                                        oauth=oauth)
+# data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
+#                                         oauth=oauth)
 
 # ##### Premium API #####
-# data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
-#                                        api=utils.TweeterPremiumAPI.day_30,
-#                                        oauth=oauth)
+data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
+                                       api=utils.TweeterPremiumAPI.full_archive,
+                                       oauth=oauth)
 
 # ##### Get tweets by user id #####
 # data = utils.get_tweets_by_user_id("1219328588", oauth)
