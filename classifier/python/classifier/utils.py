@@ -93,8 +93,8 @@ def append_user_profile_features(x_corpus: list, user_ids: list, user_profile: d
         except KeyError:
             sexism = 0
 
-        x_corpus[i].append(neutral * 1000)
-        x_corpus[i].append(racism * 1000)
-        x_corpus[i].append(sexism * 1000)
+        x_corpus[i].append(int(neutral * 1000))
+        x_corpus[i].append(int(racism * 1000))
+        x_corpus[i].append(int(sexism * 1000))
 
     return x_corpus

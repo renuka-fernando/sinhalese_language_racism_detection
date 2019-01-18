@@ -1,6 +1,7 @@
 import logging
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from keras import regularizers
 from keras.layers import Dense, LSTM
@@ -53,7 +54,7 @@ x_corpus = sequence.pad_sequences(x_corpus, maxlen=max_word_count)
 
 # shuffling data for 5-fold cross validation
 k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
-# to split raw format (integer) is required
+# to split, raw format (integer) is required
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
 fold = 0
@@ -82,7 +83,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 2
+    MAX_EPOCHS = 3
     epoch_history = {
         'acc': [],
         'val_acc': [],
@@ -148,4 +149,20 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     model = load_model("model.h5")
 
     evaluation = model.evaluate(x=x_test, y=y_test)
-    print(evaluation)
+    logging.info("Accuracy: %f" % evaluation[1])
+
+    prediction = model.predict(x_test)
+
+    test_indexes = test_indexes.reshape(test_indexes.shape[0], 1)
+    tweet_ids = data_set[:, DATA_SET_USER_ID][test_indexes]
+    true_labels = np.asarray(y_corpus_raw, dtype=int)[test_indexes]
+    class_1 = prediction[:, 2]
+    class_2 = prediction[:, 1]
+    class_3 = prediction[:, 0]
+    output = np.append(tweet_ids, true_labels, axis=1)
+    output = np.append(output, class_1.reshape(test_indexes.shape[0], 1), axis=1)
+    output = np.append(output, class_2.reshape(test_indexes.shape[0], 1), axis=1)
+    output = np.append(output, class_3.reshape(test_indexes.shape[0], 1), axis=1)
+
+    np.savetxt("report_output_%d" % fold, X=output, fmt="%s", delimiter=",")
+    logging.INFO("Fold: %d - Completed" % fold)
