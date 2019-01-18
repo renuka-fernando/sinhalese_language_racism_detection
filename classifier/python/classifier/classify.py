@@ -6,6 +6,7 @@ from keras import regularizers
 from keras.layers import Dense, LSTM
 from keras.layers.embeddings import Embedding
 from keras.models import Sequential
+from keras.models import load_model
 from keras.optimizers import Adam
 from keras.preprocessing import sequence
 from sklearn.model_selection import StratifiedKFold
@@ -60,21 +61,54 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
-    model.add(Embedding(input_dim=6000, output_dim=30, input_length=MAX_WORD_COUNT))
-    model.add(LSTM(250))
-    model.add(Dense(units=30, activation='relu', W_regularizer=regularizers.l2(0.02)))
-    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.005)))
-    adam_optimizer = Adam(lr=0.0002)
+    model.add(Embedding(input_dim=6000, output_dim=50, input_length=MAX_WORD_COUNT))
+    model.add(LSTM(300))
+    model.add(Dense(units=50, activation='relu', W_regularizer=regularizers.l2(0.09)))
+    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.02)))
+    adam_optimizer = Adam(lr=0.0001)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
     print(model.summary())
 
-    history = model.fit(x=x_train, y=y_train, nb_epoch=20, batch_size=1, validation_data=(x_valid, y_valid), verbose=1,
-                        shuffle=False)
+    best_accuracy = 0
+    best_loss = 100000
+    best_epoch = 0
+
+    MAX_EPOCHS = 10
+    epoch_history = {
+        'acc': [],
+        'val_acc': [],
+        'loss': [],
+        'val_loss': [],
+    }
+
+    # for each epoch
+    for epoch in range(MAX_EPOCHS):
+        history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
+                            verbose=1, shuffle=False)
+
+        # get validation (test) accuracy and loss
+        accuracy = history.history['val_acc'][0]
+        loss = history.history['val_loss'][0]
+
+        # set epochs' history
+        epoch_history['acc'].append(history.history['acc'][0])
+        epoch_history['val_acc'].append(history.history['val_acc'][0])
+        epoch_history['loss'].append(history.history['loss'][0])
+        epoch_history['val_loss'].append(history.history['val_loss'][0])
+
+        # select best epoch and save to disk
+        if accuracy >= best_accuracy and loss < best_loss:
+            logging.info("Saving model")
+            model.save("model.h5")
+
+            best_accuracy = accuracy
+            best_loss = loss
+            best_epoch = epoch
 
     # Plot training & validation accuracy values
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    plt.plot(epoch_history['acc'])
+    plt.plot(epoch_history['val_acc'])
     plt.title('Model accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
@@ -82,12 +116,20 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     plt.show()
 
     # Plot training & validation loss values
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
+    plt.plot(epoch_history['loss'])
+    plt.plot(epoch_history['val_loss'])
     plt.title('Model loss')
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Test'], loc='upper left')
     plt.show()
 
-    print(history.history['val_acc'])
+    print(epoch_history['val_acc'])
+
+    # load the best model saved on disk
+    del model
+    model = load_model("model.h5")
+
+    evaluation = model.evaluate(x=x_test, y=y_test)
+    print(evaluation)
+
