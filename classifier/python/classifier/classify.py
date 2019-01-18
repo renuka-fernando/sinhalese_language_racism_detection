@@ -49,6 +49,7 @@ k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
 # to split raw format (integer) is required
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
+fold = 0
 for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_raw):
     x_train_n_validation = x_corpus[train_n_validation_indexes]
     y_train_n_validation = y_corpus[train_n_validation_indexes]
@@ -98,7 +99,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
         epoch_history['val_loss'].append(history.history['val_loss'][0])
 
         # select best epoch and save to disk
-        if accuracy >= best_accuracy and loss < best_loss:
+        if accuracy >= best_accuracy and loss < best_loss + 0.01:
             logging.info("Saving model")
             model.save("model.h5")
 
@@ -112,7 +113,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     plt.title('Model accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
-    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.legend(['Train', 'Validation'], loc='upper left')
     plt.show()
 
     # Plot training & validation loss values
@@ -121,10 +122,18 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     plt.title('Model loss')
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
-    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.legend(['Train', 'Validation'], loc='upper left')
     plt.show()
 
-    print(epoch_history['val_acc'])
+    # Saving evolution history of epochs in this fold
+    evolution_history_file_name = "history_fold_" + str(fold)
+    fold += 1
+    f = open(evolution_history_file_name, 'w')
+    f.write("epoch,training_accuracy,training_loss,validation_accuracy,validation_loss\n")
+    for i in range(MAX_EPOCHS):
+        f.write("%d,%f,%f,%f,%f\n" % (i, epoch_history['acc'][i], epoch_history['loss'][i],
+                                      epoch_history['val_acc'][i], epoch_history['val_loss'][i]))
+    f.close()
 
     # load the best model saved on disk
     del model
@@ -132,4 +141,3 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     evaluation = model.evaluate(x=x_test, y=y_test)
     print(evaluation)
-
