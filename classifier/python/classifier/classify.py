@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 
 from classifier.data_set_constants import *
 from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, \
-    transform_class_to_one_hot_representation, get_calculated_user_profile
+    transform_class_to_one_hot_representation, get_calculated_user_profile, append_user_profile_features
 
 logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
 data_frame = pd.read_csv("../../../data-set/final-data-set.csv")
@@ -41,8 +41,15 @@ x_corpus = transform_to_dictionary_values(corpus_token, dictionary)
 y_corpus = transform_class_to_one_hot_representation(data_set[:, DATA_SET_CLASS])
 user_profile = get_calculated_user_profile(data_set[:, DATA_SET_USER_ID], data_set[:, DATA_SET_CLASS])
 
-# padding with zeros if not enough and else drop left words
-x_corpus = sequence.pad_sequences(x_corpus, maxlen=MAX_WORD_COUNT)
+# add user profile feature to end of the sentence
+# from: Detecting Offensive Language in Tweets using Deep Learning
+# by: Georgios K. Pitsilis, Heri Ramampiaro and Helge Langseth
+max_word_count = MAX_WORD_COUNT + 3
+x_corpus = append_user_profile_features(x_corpus=x_corpus, user_ids=data_set[:, DATA_SET_USER_ID],
+                                        user_profile=user_profile)
+
+# padding with zeros if not enough and else drop left-side words
+x_corpus = sequence.pad_sequences(x_corpus, maxlen=max_word_count)
 
 # shuffling data for 5-fold cross validation
 k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
@@ -62,7 +69,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
-    model.add(Embedding(input_dim=6000, output_dim=50, input_length=MAX_WORD_COUNT))
+    model.add(Embedding(input_dim=6000, output_dim=50, input_length=max_word_count))
     model.add(LSTM(300))
     model.add(Dense(units=50, activation='relu', W_regularizer=regularizers.l2(0.09)))
     model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.02)))
@@ -75,7 +82,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 10
+    MAX_EPOCHS = 2
     epoch_history = {
         'acc': [],
         'val_acc': [],
@@ -85,6 +92,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # for each epoch
     for epoch in range(MAX_EPOCHS):
+        logging.info("Epoch: %d" % epoch)
         history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
                             verbose=1, shuffle=False)
 

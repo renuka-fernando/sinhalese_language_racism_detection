@@ -66,3 +66,35 @@ def get_calculated_user_profile(user_ids: list, classes: list) -> dict:
         user_profile[profile] /= user_tweets_count[profile[0]]
 
     return user_profile
+
+
+def append_user_profile_features(x_corpus: list, user_ids: list, user_profile: dict) -> list:
+    """
+    append neutral, racism, sexism user profile probability feature to the end of each sentence
+    :param x_corpus: corpus with coded to integers
+    :param user_ids: list of user ids in the order of x_corpus
+    :param user_profile: user profile with user's probabilities for neutral, racism, sexism
+    :return: appended x_corpus
+    """
+    for i in range(len(x_corpus)):
+        uid = user_ids[i]
+        try:
+            neutral = user_profile[uid, "Neutral"]
+        except KeyError:
+            neutral = 0
+
+        try:
+            racism = user_profile[uid, "Racist"]
+        except KeyError:
+            racism = 0
+
+        try:
+            sexism = user_profile[uid, "Sexism"]
+        except KeyError:
+            sexism = 0
+
+        x_corpus[i].append(neutral * 1000)
+        x_corpus[i].append(racism * 1000)
+        x_corpus[i].append(sexism * 1000)
+
+    return x_corpus
