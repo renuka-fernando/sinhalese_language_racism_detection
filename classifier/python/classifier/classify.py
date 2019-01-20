@@ -1,5 +1,7 @@
 import logging
 
+from keras import metrics
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -83,7 +85,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 3
+    MAX_EPOCHS = 30
     epoch_history = {
         'acc': [],
         'val_acc': [],
@@ -93,6 +95,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # for each epoch
     for epoch in range(MAX_EPOCHS):
+        logging.info("Fold: %d" % fold)
         logging.info("Epoch: %d" % epoch)
         history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
                             verbose=1, shuffle=False)
@@ -115,6 +118,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
             best_accuracy = accuracy
             best_loss = loss
             best_epoch = epoch
+        # end of epoch
 
     # Plot training & validation accuracy values
     plt.plot(epoch_history['acc'])
@@ -136,7 +140,6 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # Saving evolution history of epochs in this fold
     evolution_history_file_name = "history_fold_" + str(fold)
-    fold += 1
     f = open(evolution_history_file_name, 'w')
     f.write("epoch,training_accuracy,training_loss,validation_accuracy,validation_loss\n")
     for i in range(MAX_EPOCHS):
@@ -153,6 +156,9 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     prediction = model.predict(x_test)
 
+
+
+    # save predictions to disk
     test_indexes = test_indexes.reshape(test_indexes.shape[0], 1)
     tweet_ids = data_set[:, DATA_SET_USER_ID][test_indexes]
     true_labels = np.asarray(y_corpus_raw, dtype=int)[test_indexes]
@@ -164,5 +170,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     output = np.append(output, class_2.reshape(test_indexes.shape[0], 1), axis=1)
     output = np.append(output, class_3.reshape(test_indexes.shape[0], 1), axis=1)
 
-    np.savetxt("report_output_%d" % fold, X=output, fmt="%s", delimiter=",")
-    logging.INFO("Fold: %d - Completed" % fold)
+    np.savetxt("test_set_predicted_output_%d" % fold, X=output, fmt="%s", delimiter=",")
+    logging.info("Fold: %d - Completed" % fold)
+    fold += 1
+    # end of fold

@@ -43,23 +43,40 @@ def build_confusion_matrix(result_file_name: str, confusion_matrix_file_name: st
     return predicted_true
 
 
-def calculate_precision_recall_f1score(confusion_matrix: list) -> dict:
+def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: str) -> dict:
     """
-
-    :param confusion_matrix:
-    :return:
+    calculate precision, recall and f1 score
+    :param confusion_matrix: confusion matrix
+    :param score_file_name: file name to save scores
+    :return: {precision, recall, f1 score}
     """
     scores = {}
     classes = ['N', 'R', 'S']
+    file = open(score_file_name, 'w')
 
     for i in range(3):
-        precision = confusion_matrix[i][i] / sum(confusion_matrix[i])
-        recall = confusion_matrix[i][i] / sum([confusion_matrix[j][i] for j in range(3)])
-        f1score = (2 * precision * recall) / (precision + recall)
-        scores[classes[i]] = {'precision': precision, 'recall': recall, 'f1score':f1score}
+        try:
+            precision = confusion_matrix[i][i] / sum(confusion_matrix[i])
+        except ZeroDivisionError:
+            precision = "INFINITE"
 
+        try:
+            recall = confusion_matrix[i][i] / sum([confusion_matrix[j][i] for j in range(3)])
+        except ZeroDivisionError:
+            recall = "INFINITE"
+
+        if precision != "INFINITE" and recall != "INFINITE":
+            f1score = (2 * precision * recall) / (precision + recall)
+        else:
+            f1score = "NaN"
+
+        scores[classes[i]] = {'precision': precision, 'recall': recall, 'f1score': f1score}
+        file.write("%s: {precision:%s, recall:%s, f1score:%s}\n" % (classes[i], precision, recall, f1score))
+
+    file.close()
     return scores
 
 
 for i in range(5):
-    build_confusion_matrix("test_set_predicted_output_%d" % i, "confusion_matrix_%d" % i)
+    matrix = build_confusion_matrix("test_set_predicted_output_%d" % i, "confusion_matrix_%d" % i)
+    calculate_precision_recall_f1score(matrix, "scores_%d" % i)
