@@ -1,3 +1,6 @@
+from classifier.utils import get_last_results_folder
+
+
 def prediction(n: float, r: float, s: float) -> int:
     """
     Returns label of the class with maximum probability
@@ -81,5 +84,7 @@ def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: 
 
 
 for i in range(5):
-    matrix = build_confusion_matrix("test_set_predicted_output_%d" % i, "confusion_matrix_%d" % i)
-    calculate_precision_recall_f1score(matrix, "scores_%d" % i)
+    directory = get_last_results_folder()
+    matrix = build_confusion_matrix("%s/test_set_predicted_output_%d" % (directory, i),
+                                    "%s/confusion_matrix_%d" % (directory, i))
+    calculate_precision_recall_f1score(matrix, "%s/scores_%d" % (directory, i))

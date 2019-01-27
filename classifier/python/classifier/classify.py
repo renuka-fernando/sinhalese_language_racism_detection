@@ -15,7 +15,8 @@ from sklearn.model_selection import train_test_split
 
 from classifier.data_set_constants import *
 from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, \
-    transform_class_to_one_hot_representation, get_calculated_user_profile, append_user_profile_features
+    transform_class_to_one_hot_representation, get_calculated_user_profile, append_user_profile_features, \
+    create_next_results_folder
 
 logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
 data_frame = pd.read_csv("../../../data-set/final-data-set.csv")
@@ -58,6 +59,7 @@ k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
 fold = 0
+directory = create_next_results_folder()  # directory for saving results
 for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_raw):
     x_train_n_validation = x_corpus[train_n_validation_indexes]
     y_train_n_validation = y_corpus[train_n_validation_indexes]
@@ -86,7 +88,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 30
+    MAX_EPOCHS = 2
     epoch_history = {
         'acc': [],
         'val_acc': [],
@@ -114,7 +116,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
         # select best epoch and save to disk
         if accuracy >= best_accuracy and loss < best_loss + 0.01:
             logging.info("Saving model")
-            model.save("model_fold_%d.h5" % fold)
+            model.save("%s/model_fold_%d.h5" % (directory, fold))
 
             best_accuracy = accuracy
             best_loss = loss
@@ -124,10 +126,11 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     # Plot training & validation accuracy values
     plt.plot(epoch_history['acc'])
     plt.plot(epoch_history['val_acc'])
-    plt.title('Model accuracy')
+    plt.title('Model Accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper left')
+    plt.savefig("%s/plot_model_accuracy_%d" % (directory, fold))
     plt.show()
 
     # Plot training & validation loss values
@@ -137,11 +140,11 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper left')
+    plt.savefig("%s/plot_model_loss_%d" % (directory, fold))
     plt.show()
 
     # Saving evolution history of epochs in this fold
-    evolution_history_file_name = "history_fold_" + str(fold)
-    f = open(evolution_history_file_name, 'w')
+    f = open("%s/history_fold_%d" % (directory, fold), 'w')
     f.write("epoch,training_accuracy,training_loss,validation_accuracy,validation_loss\n")
     for i in range(MAX_EPOCHS):
         f.write("%d,%f,%f,%f,%f\n" % (i, epoch_history['acc'][i], epoch_history['loss'][i],
@@ -150,7 +153,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # load the best model saved on disk
     del model
-    model = load_model("model_fold_%d.h5" % fold)
+    model = load_model("%s/model_fold_%d.h5" % (directory, fold))
 
     evaluation = model.evaluate(x=x_test, y=y_test)
     logging.info("Accuracy: %f" % evaluation[1])
@@ -169,7 +172,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     output = np.append(output, class_2.reshape(test_indexes.shape[0], 1), axis=1)
     output = np.append(output, class_3.reshape(test_indexes.shape[0], 1), axis=1)
 
-    np.savetxt("test_set_predicted_output_%d" % fold, X=output, fmt="%s", delimiter=",")
+    np.savetxt("%s/test_set_predicted_output_%d" % (directory, fold), X=output, fmt="%s", delimiter=",")
     logging.info("Fold: %d - Completed" % fold)
     fold += 1
     # end of fold

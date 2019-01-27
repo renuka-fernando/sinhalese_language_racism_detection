@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from classifier.data_set_constants import DATA_SET_CLASSES
@@ -98,3 +100,34 @@ def append_user_profile_features(x_corpus: list, user_ids: list, user_profile: d
         x_corpus[i].append(int(sexism * 1000))
 
     return x_corpus
+
+
+def create_next_results_folder():
+    """
+    Create the next results folder and returns the directory name
+    :return: directory name
+    """
+    result_no = 0
+    directory = "results_%d" % result_no
+
+    while os.path.exists(directory):
+        result_no += 1
+        directory = "results_%d" % result_no
+
+    os.makedirs(directory)
+    return directory
+
+
+def get_last_results_folder():
+    """
+    Return last created results directory
+    :return: last created results directory
+    """
+    result_no = 0
+    directory = "results_%d" % result_no
+
+    while os.path.exists(directory):
+        result_no += 1
+        directory = "results_%d" % result_no
+
+    return "results_%d" % (result_no - 1)
