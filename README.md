@@ -10,12 +10,14 @@ Sri Lanka had a same kind of problem related to social medias in March, 2018 rel
 
 ## 2. Requirements to Run the Code Setup
 
-- Python 3
-- Mongo DB
-- pymongo - `pip install pymongo`
-- pandas - `pip install pandas`
-- requests_oauthlib - `pip install requests_oauthlib`
-- emoji - `pip install emoji`
+- [Python 3](https://www.python.org/download/releases/3.0/)
+- [TensorFlow](https://github.com/tensorflow/tensorflow)
+- [Keras](https://github.com/keras-team/keras)
+- [Mongo DB](https://github.com/mongodb/mongo)
+- Pymongo - `pip install pymongo`
+- Pandas - `pip install pandas`
+- Requests Oauthlib - `pip install requests_oauthlib`
+- Emoji - `pip install emoji`
 
 ## 3. Extend the Tweet Data
 
@@ -105,7 +107,7 @@ You can backup collected tweets by running following script.
 mongodump --collection tweets --db db
 ```
 
-## 4. Run the Model
+## 4. Train the Model
 
 Run the following script to train the model. This will start training the model. Make sure the final CSV file has been placed as `[root directory]/data-set/final-data-set.csv`.
 
