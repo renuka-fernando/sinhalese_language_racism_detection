@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../")
+sys.path.append("../../../sinhala-preprocessing/python")
 from classifier.utils import get_last_results_folder
 
 
@@ -83,7 +87,7 @@ def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: 
     return scores
 
 
-for i in range(5):
+for i in range(5):  # here 5 is the number of folds
     directory = get_last_results_folder()
     matrix = build_confusion_matrix("%s/test_set_predicted_output_%d" % (directory, i),
                                     "%s/confusion_matrix_%d" % (directory, i))

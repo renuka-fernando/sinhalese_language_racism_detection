@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,6 +14,8 @@ from keras.preprocessing import sequence
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
 
+sys.path.append("../")
+sys.path.append("../../../sinhala-preprocessing/python")
 from classifier.data_set_constants import *
 from classifier.utils import tokenize_corpus, build_dictionary, transform_to_dictionary_values, \
     transform_class_to_one_hot_representation, get_calculated_user_profile, append_user_profile_features, \
@@ -54,7 +57,8 @@ x_corpus = append_user_profile_features(x_corpus=x_corpus, user_ids=data_set[:, 
 x_corpus = sequence.pad_sequences(x_corpus, maxlen=max_word_count)
 
 # shuffling data for 5-fold cross validation
-k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=18)
+folds_count = 5
+k_fold = StratifiedKFold(n_splits=folds_count, shuffle=True, random_state=18)
 # to split, raw format (integer) is required
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
@@ -98,8 +102,8 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # for each epoch
     for epoch in range(MAX_EPOCHS):
-        logging.info("Fold: %d" % fold)
-        logging.info("Epoch: %d" % epoch)
+        logging.info("Fold: %d/%d" % (fold, folds_count))
+        logging.info("Epoch: %d/%d" % (epoch, MAX_EPOCHS))
         history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
                             verbose=1, shuffle=False)
 

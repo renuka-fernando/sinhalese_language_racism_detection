@@ -17,26 +17,22 @@ Sri Lanka had a same kind of problem related to social medias in March, 2018 rel
 - requests_oauthlib - `pip install requests_oauthlib`
 - emoji - `pip install emoji`
 
-## 3. Restore Mongo DB with Twitter Data
+## 3. Extend the Tweet Data
 
+### 3.1 Run the Mongo DB
+
+Run the Mongo DB with following script.
+
+```bash
+mongod --dbpath data-set/mongo-db
+```
 Restore the existing Mongo DB to your environment with running the following script.
 
 ```bash
-mongod --dbpath data-set/mongo-db
-mongorestore dump
+mongorestore [root directory]/data-set/dump
 ```
 
-## 4. Extend the Tweet Data
-
-### 4.1 Run the Mongo DB
-
-Run the following script to run the Mongo DB.
-
-```bash
-mongod --dbpath data-set/mongo-db
-```
-
-### 4.2 Setup Twitter Keys
+### 3.2 Setup Twitter Keys
 
 Update the configuration file `twitter-api-reader/python/config/twitter-keys.ini` with your Twitter API keys.
 
@@ -48,7 +44,7 @@ resource_owner_key = <your resource owner key>
 resource_owner_secret = <your resource owner secret>
 ```
 
-### 4.3 Setup Twitter Search Query
+### 3.3 Setup Twitter Search Query
 
 Update the configuration file `twitter-api-reader/python/config/reader-config.ini` with Mongo DB host, port, database name and the collection name.
 
@@ -67,32 +63,62 @@ query = බැගින් OR බැඟින් OR රකින්න OR නි
 json_payload = {"query":"උන් OR උං OR සමහර OR අතරින් OR නැත්තම් OR මතකය","fromDate":"201803010000","toDate":"201805010000"}
 ```
 
-- Use `[csv]` section to specifiy the columns that is used to create the csv file.
-- Use `[tweets]` section to speicify search query.
+- Use `[csv]` section to specify the columns that is used to create the csv file.
+- Use `[tweets]` section to specify search query.
   - `query` is used for Standard Twitter Search API. Use `OR` to `AND` and other Tweeter operations to make query.
-  - `json_payload` is used for Premium Twitter Search API. This is a JSON. You can specify `fromDate` and `toDate` to find Tweets in the range specified or any other operators that Tweeter API supports. Langauge may be an important operator.
+  - `json_payload` is used for Premium Twitter Search API. This is a JSON. You can specify `fromDate` and `toDate` to find Tweets in the range specified or any other operators that Tweeter API supports. Language may be an important operator.
     ```ini
     json_payload = {"query":"උන් lang:si OR උං lang:si OR සමහර lang:si","maxResults":"100","fromDate":"201811050000","toDate":"201812030000"}
     ```
 
-### 4.4 Query with Tweeter
+### 3.4 Query with Tweeter
 
-Words used to query is defined in the configurations done in the section **4.3**. Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section **4.1**.
-
-```bash
-cd twitter-api-reader/python/twitter && python tweets_to_mongo.py s
-```
-
-To use the premium API change the letter `s` with `p` at the end of the script. So it is as following.
+Words used to query is defined in the configurations done in the section **3.3**. Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section **3.1**.
 
 ```bash
-cd twitter-api-reader/python/twitter && python tweets_to_mongo.py p
+cd twitter-api-reader/python/twitter; python tweets_to_mongo.py s
 ```
 
-### 4.X. Backup Mongo DB
+To use the premium API change the letter `s` with `p` at the end of the script. So, it is as following.
 
-Backup your data with running following script.
+```bash
+cd twitter-api-reader/python/twitter; python tweets_to_mongo.py p
+```
+
+### 3.5 Create CSV from Mongo DB
+
+You can create a CSV file from the specified Database and Collection in the configuration file mentioned in the section **3.3**. Run the following script to create the CSV file.
+
+```bash
+cd twitter-api-reader/python/twitter; python mongo_to_csv.py
+```
+
+The created file can be found as `[root directory]/data-set/data-set.csv`. You can import this file to a spread sheet program and manually label tweets. The [**Excel file (xlsx)**](data-set/final-data-set.xlsx) used in this project can be found [here](data-set/final-data-set.xlsx). The exported CSV file from this program can be used for training the model.
+
+Place the final CSV file as `[root directory]/data-set/final-data-set.csv`.
+
+### 3.6. Backup Mongo DB
+
+You can backup collected tweets by running following script.
 
 ```bash
 mongodump --collection tweets --db db
+```
+
+## 4. Run the Model
+
+Run the following script to train the model. This will start training the model. Make sure the final CSV file has been placed as `[root directory]/data-set/final-data-set.csv`.
+
+```bash
+cd classifier/python/classifier; python classify.py
+```
+
+This will create an h5 file that contains the model in a directory `[root directory]/classifier/python/classifier/results_x`.
+
+## 5. Build Results
+
+Run the following script to validate the model. This will use the final results directory to validate the model, create files associate with scores in the same directory.
+
+```bash
+cd classifier/python/classifier; python validate.py
 ```
