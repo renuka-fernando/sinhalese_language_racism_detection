@@ -1,9 +1,11 @@
+import sys
 from configparser import ConfigParser
 
 from pandas import json
 from pymongo import MongoClient
 from requests_oauthlib import OAuth1
 
+sys.path.append("../")
 from twitter import utils
 
 config_parser = ConfigParser()
@@ -16,14 +18,23 @@ oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
                resource_owner_secret=config_parser.get('twitter', 'resource_owner_secret'))
 
 # read twitter API
-# ##### Standard API #####
-data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
-                                        oauth=oauth)
+api_type = "s"  # s: Standard, p: Premium
+if len(sys.argv) > 1:
+    option = sys.argv[1]
+    if option in ['s', 'p']:
+        api_type = option
+    else:
+        raise ValueError("First argument should be API type: S or P")
 
-# ##### Premium API #####
-# data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
-#                                        api=utils.TweeterPremiumAPI.full_archive,
-#                                        oauth=oauth)
+if api_type == 's':
+    # ##### Standard API #####
+    data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
+                                            oauth=oauth)
+else:
+    # ##### Premium API #####
+    data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
+                                           api=utils.TweeterPremiumAPI.full_archive,
+                                           oauth=oauth)
 
 # ##### Get tweets by user id #####
 # data = utils.get_tweets_by_user_id("1219328588", oauth)

@@ -38,7 +38,7 @@ mongod --dbpath data-set/mongo-db
 
 ### 4.2 Setup Twitter Keys
 
-Update the file `twitter-api-reader/python/config/twitter-keys.ini` with your Twitter keys.
+Update the configuration file `twitter-api-reader/python/config/twitter-keys.ini` with your Twitter API keys.
 
 ```ini
 [twitter]
@@ -50,7 +50,7 @@ resource_owner_secret = <your resource owner secret>
 
 ### 4.3 Setup Twitter Search Query
 
-Update the file `twitter-api-reader/python/config/reader-config.ini` with your Twitter keys.
+Update the configuration file `twitter-api-reader/python/config/reader-config.ini` with Mongo DB host, port, database name and the collection name.
 
 ```ini
 [mongo]
@@ -63,12 +63,30 @@ collection = tweets
 columns = id, user.id, created_at, text
 
 [tweets]
-query = බැගින් OR නයකය OR රකින්න OR නියමයි OR අදහස OR මුලු OR අධික OR පනින්න OR මුළු OR එයලව OR ආවාහම OR හට OR මෙන්
-json_payload = {"query":"උන් OR උං OR සමහර OR අතරින් OR නැත්තම් OR මතකය OR දෙමු OR අකැමැති OR වෙමුකො OR දෙස OR පරණ OR පව්","fromDate":"201803010000","toDate":"201805010000"}
+query = බැගින් OR බැඟින් OR රකින්න OR නියමයි OR අදහස OR මුලු OR මුළු OR අධික OR පනින්න OR එයලව OR ආවාහම OR හට OR මෙන්
+json_payload = {"query":"උන් OR උං OR සමහර OR අතරින් OR නැත්තම් OR මතකය","fromDate":"201803010000","toDate":"201805010000"}
 ```
 
-```ini
-json_payload = {"query":"පලයං lang:si OR පලයන් lang:si OR හුත්තො lang:si OR හුත්ත","maxResults":"100","fromDate":"201811050000","toDate":"201812030000"}
+- Use `[csv]` section to specifiy the columns that is used to create the csv file.
+- Use `[tweets]` section to speicify search query.
+  - `query` is used for Standard Twitter Search API. Use `OR` to `AND` and other Tweeter operations to make query.
+  - `json_payload` is used for Premium Twitter Search API. This is a JSON. You can specify `fromDate` and `toDate` to find Tweets in the range specified or any other operators that Tweeter API supports. Langauge may be an important operator.
+    ```ini
+    json_payload = {"query":"උන් lang:si OR උං lang:si OR සමහර lang:si","maxResults":"100","fromDate":"201811050000","toDate":"201812030000"}
+    ```
+
+### 4.4 Query with Tweeter
+
+Words used to query is defined in the configurations done in the section **4.3**. Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section **4.1**.
+
+```bash
+cd twitter-api-reader/python/twitter && python tweets_to_mongo.py s
+```
+
+To use the premium API change the letter `s` with `p` at the end of the script. So it is as following.
+
+```bash
+cd twitter-api-reader/python/twitter && python tweets_to_mongo.py p
 ```
 
 ### 4.X. Backup Mongo DB
