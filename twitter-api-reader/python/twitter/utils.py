@@ -63,7 +63,7 @@ def search_tweets_standard_api(query: str, oauth: OAuth1) -> list:
     # without "tweet_mode=extended"
     url_template = Template('https://api.twitter.com/1.1/search/tweets.json?q=$query&lang=si&count=100')
     data = json.loads(requests.get(
-        url=url_template.substitute(query=query),
+        url=url_template.substitute(query=query + ' -RT'),
         auth=oauth
     ).text)
     try:

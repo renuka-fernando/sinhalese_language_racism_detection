@@ -88,7 +88,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 2
+    MAX_EPOCHS = 30
     epoch_history = {
         'acc': [],
         'val_acc': [],
