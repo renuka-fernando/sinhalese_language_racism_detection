@@ -66,7 +66,10 @@ def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: 
             recall = "INFINITE"
 
         if precision != "INFINITE" and recall != "INFINITE":
-            f1score = (2 * precision * recall) / (precision + recall)
+            try:
+                f1score = (2 * precision * recall) / (precision + recall)
+            except ZeroDivisionError:
+                f1score = "NaN"
         else:
             f1score = "NaN"
 

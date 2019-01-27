@@ -1,7 +1,5 @@
 import logging
 
-from keras import metrics
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -73,9 +71,12 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     # create the model
     model = Sequential()
     model.add(Embedding(input_dim=6000, output_dim=50, input_length=max_word_count))
-    model.add(LSTM(300))
-    model.add(Dense(units=50, activation='relu', W_regularizer=regularizers.l2(0.09)))
-    model.add(Dense(3, activation='softmax', W_regularizer=regularizers.l2(0.02)))
+    model.add(LSTM(400))
+    model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.01),
+                    activity_regularizer=regularizers.l2(0.01)))
+    model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.03),
+                    activity_regularizer=regularizers.l2(0.005)))
+    model.add(Dense(3, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
     adam_optimizer = Adam(lr=0.0001)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
@@ -113,7 +114,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
         # select best epoch and save to disk
         if accuracy >= best_accuracy and loss < best_loss + 0.01:
             logging.info("Saving model")
-            model.save("model.h5")
+            model.save("model_fold_%d.h5" % fold)
 
             best_accuracy = accuracy
             best_loss = loss
@@ -149,14 +150,12 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # load the best model saved on disk
     del model
-    model = load_model("model.h5")
+    model = load_model("model_fold_%d.h5" % fold)
 
     evaluation = model.evaluate(x=x_test, y=y_test)
     logging.info("Accuracy: %f" % evaluation[1])
 
     prediction = model.predict(x_test)
-
-
 
     # save predictions to disk
     test_indexes = test_indexes.reshape(test_indexes.shape[0], 1)
