@@ -18,23 +18,30 @@ oauth = OAuth1(client_key=config_parser.get('twitter', 'client_key'),
                resource_owner_secret=config_parser.get('twitter', 'resource_owner_secret'))
 
 # read twitter API
-api_type = "s"  # s: Standard, p: Premium
+api_type = "s"  # s: Standard, p30: Premium 30 days, pf: Premium Full Archive
 if len(sys.argv) > 1:
     option = sys.argv[1]
-    if option in ['s', 'p']:
+    if option in ['s', 'p30', 'pf']:
         api_type = option
     else:
-        raise ValueError("First argument should be API type: S or P")
+        raise ValueError("First argument should be API type: s or p30 or pf")
 
 if api_type == 's':
     # ##### Standard API #####
     data = utils.search_tweets_standard_api(query=config_parser.get('tweets', 'query'),
                                             oauth=oauth)
-else:
-    # ##### Premium API #####
+elif api_type == 'p30':
+    # ##### Premium API 30 days #####
+    data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
+                                           api=utils.TweeterPremiumAPI.day_30,
+                                           oauth=oauth)
+elif api_type == 'pf':
+    # ##### Premium API Full Archive #####
     data = utils.search_tweets_premium_api(json_payload=json.loads(config_parser.get('tweets', 'json_payload')),
                                            api=utils.TweeterPremiumAPI.full_archive,
                                            oauth=oauth)
+else:
+    assert False, 'First argument should be API type: s or p30 or pf'
 
 # ##### Get tweets by user id #####
 # data = utils.get_tweets_by_user_id("1219328588", oauth)

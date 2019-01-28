@@ -28,7 +28,7 @@ Run the Mongo DB with following script.
 ```bash
 mongod --dbpath data-set/mongo-db
 ```
-Restore the existing Mongo DB to your environment with running the following script.
+Restore the existing Mongo DB to your environment with running the following script. But this is optional.
 
 ```bash
 mongorestore [root directory]/data-set/dump
@@ -81,10 +81,15 @@ Words used to query is defined in the configurations done in the section **3.3**
 cd twitter-api-reader/python/twitter; python tweets_to_mongo.py s
 ```
 
-To use the premium API change the letter `s` with `p` at the end of the script. So, it is as following.
+To use the premium API change the letter `s` with `p30` or `pf` at the end of the script.
+
+- `p30` - To retrieve Tweets within 30 days.
+- `pf` - To retrive any Tweet (Full Archive).
+
+example:
 
 ```bash
-cd twitter-api-reader/python/twitter; python tweets_to_mongo.py p
+cd twitter-api-reader/python/twitter; python tweets_to_mongo.py p30
 ```
 
 ### 3.5 Create CSV from Mongo DB
@@ -97,7 +102,7 @@ cd twitter-api-reader/python/twitter; python mongo_to_csv.py
 
 The created file can be found as `[root directory]/data-set/data-set.csv`. You can import this file to a spread sheet program and manually label tweets. The [**Excel file (xlsx)**](data-set/final-data-set.xlsx) used in this project can be found [here](data-set/final-data-set.xlsx). The exported CSV file from this program can be used for training the model.
 
-Place the final CSV file as `[root directory]/data-set/final-data-set.csv`.
+Place the final CSV file as `[root directory]/data-set/final-data-set.csv`. This is used to train the model.
 
 ### 3.6. Backup Mongo DB
 
@@ -107,7 +112,9 @@ You can backup collected tweets by running following script.
 mongodump --collection tweets --db db
 ```
 
-## 4. Train the Model
+## 4. Run the Model
+
+### 4.1. Training the Model
 
 Run the following script to train the model. This will start training the model. Make sure the final CSV file has been placed as `[root directory]/data-set/final-data-set.csv`.
 
@@ -117,7 +124,7 @@ cd classifier/python/classifier; python classify.py
 
 This will create an h5 file that contains the model in a directory `[root directory]/classifier/python/classifier/results_x`.
 
-## 5. Build Results
+### 4.2. Build Results
 
 Run the following script to validate the model. This will use the final results directory to validate the model, create files associate with scores in the same directory.
 
