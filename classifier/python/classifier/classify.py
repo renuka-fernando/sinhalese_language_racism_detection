@@ -76,7 +76,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # create the model
     model = Sequential()
-    model.add(Embedding(input_dim=6000, output_dim=50, input_length=max_word_count))
+    model.add(Embedding(input_dim=7000, output_dim=50, input_length=max_word_count))
     model.add(LSTM(400))
     model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.01),
                     activity_regularizer=regularizers.l2(0.01)))
