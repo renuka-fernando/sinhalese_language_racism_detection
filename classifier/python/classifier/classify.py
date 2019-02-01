@@ -56,9 +56,12 @@ x_corpus = append_user_profile_features(x_corpus=x_corpus, user_ids=data_set[:, 
 # padding with zeros if not enough and else drop left-side words
 x_corpus = sequence.pad_sequences(x_corpus, maxlen=max_word_count)
 
-# shuffling data for 5-fold cross validation
-folds_count = 5
-k_fold = StratifiedKFold(n_splits=folds_count, shuffle=True, random_state=18)
+# ################## Deep Neural Network ###################### #
+FOLDS_COUNT = 5
+MAX_EPOCHS = 20
+
+# splitting data for 5-fold cross validation
+k_fold = StratifiedKFold(n_splits=FOLDS_COUNT, shuffle=True, random_state=18)
 # to split, raw format (integer) is required
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
@@ -74,25 +77,25 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     x_train, x_valid, y_train, y_valid = train_test_split(x_train_n_validation, y_train_n_validation, test_size=0.12,
                                                           random_state=94)
 
-    # create the model
+    # ################## Deep Neural Network Model ###################### #
     model = Sequential()
-    model.add(Embedding(input_dim=7000, output_dim=50, input_length=max_word_count))
-    model.add(LSTM(400))
+    model.add(Embedding(input_dim=7000, output_dim=60, input_length=max_word_count))
+    model.add(LSTM(600))
+    model.add(Dense(units=max_word_count, activation='tanh', kernel_regularizer=regularizers.l2(0.04),
+                    activity_regularizer=regularizers.l2(0.015)))
     model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.01),
-                    activity_regularizer=regularizers.l2(0.01)))
-    model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.03),
-                    activity_regularizer=regularizers.l2(0.005)))
+                    bias_regularizer=regularizers.l2(0.01)))
     model.add(Dense(3, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
-    adam_optimizer = Adam(lr=0.0001)
+    adam_optimizer = Adam(lr=0.001, decay=0.0001)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 
     print(model.summary())
+    # ################## Deep Neural Network Model ###################### #
 
     best_accuracy = 0
     best_loss = 100000
     best_epoch = 0
 
-    MAX_EPOCHS = 30
     epoch_history = {
         'acc': [],
         'val_acc': [],
@@ -102,7 +105,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # for each epoch
     for epoch in range(MAX_EPOCHS):
-        logging.info("Fold: %d/%d" % (fold, folds_count))
+        logging.info("Fold: %d/%d" % (fold, FOLDS_COUNT))
         logging.info("Epoch: %d/%d" % (epoch, MAX_EPOCHS))
         history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
                             verbose=1, shuffle=False)

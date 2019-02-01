@@ -8,6 +8,14 @@ Social media is the collective of online communications channels dedicated to co
 
 Sri Lanka had a same kind of problem related to social medias in March, 2018 related to an incident happened in Digana, Kandy that occurs due to failure of social media to detect of race speeches and offensive language on comments and posts since they were in Sinhala language. Current tools failed to detect such things and the temporary solution was blocking on Facebook and other social media
 
+## 2. Objectives of the Research
+
+In this research I am expecting to address two main tasks as our objectives. Those are mentioned below.
+
+- To address the actual need of detecting hate speech in Sinhala language-based posts, introducing a labelled data set of Sinhala posts for future researches with the help of Sinhala language experts.
+- Introduce a Deep Learning - Recurrent Neural Network architecture and pre-processing methods with the implementation. The implementation is done to be easy to understand and with the intention is to make it use in future researches for hate speech detection on Sinhala Language.
+
+
 ## 2. Requirements to Run the Code Setup
 
 - [Python 3](https://www.python.org/download/releases/3.0/)
