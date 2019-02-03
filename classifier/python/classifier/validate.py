@@ -63,18 +63,18 @@ def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: 
 
     for i in range(3):
         try:
-            precision = confusion_matrix[i][i] / sum(confusion_matrix[i])
+            precision = round(confusion_matrix[i][i] / sum(confusion_matrix[i]), 4)
         except ZeroDivisionError:
             precision = "INFINITE"
 
         try:
-            recall = confusion_matrix[i][i] / sum([confusion_matrix[j][i] for j in range(3)])
+            recall = round(confusion_matrix[i][i] / sum([confusion_matrix[j][i] for j in range(3)]), 4)
         except ZeroDivisionError:
             recall = "INFINITE"
 
         if precision != "INFINITE" and recall != "INFINITE":
             try:
-                f1score = (2 * precision * recall) / (precision + recall)
+                f1score = round((2 * precision * recall) / (precision + recall), 4)
             except ZeroDivisionError:
                 f1score = "NaN"
         else:
