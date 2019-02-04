@@ -36,6 +36,7 @@ corpus_token = tokenize_corpus(data_set[:, DATA_SET_TEXT])
 
 logging.info("Building the dictionary")
 dictionary = build_dictionary(corpus_token)
+dictionary_length = len(dictionary) + 2  # 0 is not used and 1 is for UNKNOWN
 
 # to get sentence back
 # ' '.join([list(dictionary.keys())[i-2] for i in x_test[0] if i > 1])
@@ -58,15 +59,18 @@ x_corpus = sequence.pad_sequences(x_corpus, maxlen=max_word_count)
 
 # ################## Deep Neural Network ###################### #
 FOLDS_COUNT = 5
-MAX_EPOCHS = 20
+MAX_EPOCHS = 15
+VALIDATION_TEST_SIZE = 0.12
 
 # splitting data for 5-fold cross validation
 k_fold = StratifiedKFold(n_splits=FOLDS_COUNT, shuffle=True, random_state=18)
 # to split, raw format (integer) is required
 y_corpus_raw = [0 if cls[2] == 1 else (1 if cls[1] == 1 else 2) for cls in y_corpus]
 
-fold = 0
 directory = create_next_results_folder()  # directory for saving results
+logging.info("created the directory: %s" % directory)
+
+fold = 0
 for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_raw):
     x_train_n_validation = x_corpus[train_n_validation_indexes]
     y_train_n_validation = y_corpus[train_n_validation_indexes]
@@ -74,12 +78,12 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     y_test = y_corpus[test_indexes]
 
     # train and validation data sets
-    x_train, x_valid, y_train, y_valid = train_test_split(x_train_n_validation, y_train_n_validation, test_size=0.12,
-                                                          random_state=94)
+    x_train, x_valid, y_train, y_valid = train_test_split(x_train_n_validation, y_train_n_validation,
+                                                          test_size=VALIDATION_TEST_SIZE, random_state=94)
 
     # ################## Deep Neural Network Model ###################### #
     model = Sequential()
-    model.add(Embedding(input_dim=7000, output_dim=60, input_length=max_word_count))
+    model.add(Embedding(input_dim=dictionary_length, output_dim=60, input_length=max_word_count))
     model.add(LSTM(600))
     model.add(Dense(units=max_word_count, activation='tanh', kernel_regularizer=regularizers.l2(0.04),
                     activity_regularizer=regularizers.l2(0.015)))
@@ -107,7 +111,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     for epoch in range(MAX_EPOCHS):
         logging.info("Fold: %d/%d" % (fold, FOLDS_COUNT))
         logging.info("Epoch: %d/%d" % (epoch, MAX_EPOCHS))
-        history = model.fit(x=x_train, y=y_train, nb_epoch=1, batch_size=1, validation_data=(x_valid, y_valid),
+        history = model.fit(x=x_train, y=y_train, epochs=1, batch_size=1, validation_data=(x_valid, y_valid),
                             verbose=1, shuffle=False)
 
         # get validation (test) accuracy and loss
@@ -152,6 +156,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
 
     # Saving evolution history of epochs in this fold
     f = open("%s/history_fold_%d" % (directory, fold), 'w')
+    f.write("best_epoch: %d\n" % best_epoch)
     f.write("epoch,training_accuracy,training_loss,validation_accuracy,validation_loss\n")
     for i in range(MAX_EPOCHS):
         f.write("%d,%f,%f,%f,%f\n" % (i, epoch_history['acc'][i], epoch_history['loss'][i],

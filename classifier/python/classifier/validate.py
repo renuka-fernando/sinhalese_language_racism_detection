@@ -1,3 +1,4 @@
+import logging
 import sys
 
 sys.path.append("../")
@@ -87,8 +88,11 @@ def calculate_precision_recall_f1score(confusion_matrix: list, score_file_name: 
     return scores
 
 
+logging.basicConfig(format='%(levelname)s %(asctime)s: %(message)s', level=logging.INFO)
+directory = get_last_results_folder()
+logging.info("Validating on %s" % directory)
+
 for i in range(5):  # here 5 is the number of folds
-    directory = get_last_results_folder()
     matrix = build_confusion_matrix("%s/test_set_predicted_output_%d" % (directory, i),
                                     "%s/confusion_matrix_%d" % (directory, i))
     calculate_precision_recall_f1score(matrix, "%s/scores_%d" % (directory, i))
