@@ -1,0 +1,3 @@
+N: {precision:0.9352, recall:0.9352, f1score:0.9352}
+R: {precision:0.64, recall:0.7619, f1score:0.6957}
+S: {precision:0.725, recall:0.6591, f1score:0.6905}
