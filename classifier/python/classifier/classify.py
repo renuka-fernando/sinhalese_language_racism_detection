@@ -84,12 +84,12 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     # ################## Deep Neural Network Model ###################### #
     model = Sequential()
     model.add(Embedding(input_dim=dictionary_length, output_dim=60, input_length=max_word_count))
-    model.add(LSTM(600))
+    model.add(LSTM(units=600))
     model.add(Dense(units=max_word_count, activation='tanh', kernel_regularizer=regularizers.l2(0.04),
                     activity_regularizer=regularizers.l2(0.015)))
     model.add(Dense(units=max_word_count, activation='relu', kernel_regularizer=regularizers.l2(0.01),
                     bias_regularizer=regularizers.l2(0.01)))
-    model.add(Dense(3, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.add(Dense(units=3, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
     adam_optimizer = Adam(lr=0.001, decay=0.0001)
     model.compile(loss='categorical_crossentropy', optimizer=adam_optimizer, metrics=['accuracy'])
 

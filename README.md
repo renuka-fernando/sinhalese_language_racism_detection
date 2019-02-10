@@ -38,6 +38,8 @@ Sinhala language is used by more than 16 million native speakers and constitutio
 |    Consonants         |    ක, ඛ,  ග, ඝ, ඞ, ඟ, ච, ඡ, ජ, ඣ, ඤ, ඥ, ඦ, ට, ඨ, ඩ, ඪ, ණ, ඬ, ත, ථ, ද, ධ, න, ඳ, ප, ඵ, බ, භ, ම, ඹ, ය, ර, ල, ව, ශ, ෂ, ස, හ, ළ, ෆ    |
 |    Semi-Consonants    |    ං, ඃ                                                                                                                          |
 
+### 3.2. Fixing Vowels
+
 When typing Sinhala letters people can make mistakes. For example, “කෛ” can typed as “ක” + “ෙ” + “ෙ”. Following table shows two different ways writing the word “දෛවය”. Even though these two words seems same computer identify these two words as two different word.
 
 |                    |    Letter Combination             |    Word     |
@@ -62,6 +64,101 @@ wrong_text: දෙෙවය
 correct_text: දෛවය
 wrong_text == correct_text: False
 ```
+
+The following images shows different keys for "ෙ" and "ෛ".
+
+![key board](images/keyboard_1.png)
+![key board](images/keyboard_2.png)
+
+The python implementation of vowel fixing can be found [here]( sinhala-preprocessing/python/preprocessing/sinhalese_vowel_letter_fixer.py).
+
+### 3.3. Simplifying Sinhalese Characters
+
+The textual contents in social networks are often informal, unstructured and even misspelled. With simplifying characters, it is able to identify same word with different misspelled words.
+
+The tweet in following figure has the word “මූහූදට” instead of “මුහුදට”. The word “මෙ” can be spelled as “මේ”.
+
+```sh
+"@indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි මෙ ඔක්කොම case. Sighhhhhhhh 😢"
+```
+
+The following python code snippest used to simplify all text for training purpose. This will allow computer to identify such words like “මූහූදට” and “මුහුදට” as same.
+
+```py
+simplify_characters_dict = {
+    # Consonant
+    "ඛ": "ක",
+    "ඝ": "ග",
+    "ඟ": "ග",
+    "ඡ": "ච",
+    "ඣ": "ජ",
+    "ඦ": "ජ",
+    "ඤ": "ඥ",
+    "ඨ": "ට",
+    "ඪ": "ඩ",
+    "ණ": "න",
+    "ඳ": "ද",
+    "ඵ": "ප",
+    "භ": "බ",
+    "ඹ": "බ",
+    "ශ": "ෂ",
+    "ළ": "ල",
+
+    # Vowels
+    "ආ": "අ",
+    "ඈ": "ඇ",
+    "ඊ": "ඉ",
+    "ඌ": "උ",
+    "ඒ": "එ",
+    "ඕ": "ඔ",
+
+    "ා": "",
+    "ෑ": "ැ",
+    "ී": "ි",
+    "ූ": "ු",
+    "ේ": "ෙ",
+    "ෝ": "ො",
+    "ෲ": "ෘ"
+}
+
+
+def get_simplified_character(character: str) -> str:
+    if len(character) != 1:
+        raise TypeError("character should be a string with length 1")
+    try:
+        return simplify_characters_dict[character]
+    except KeyError:
+        return character
+
+
+def simplify_sinhalese_text(text: str) -> str:
+    """
+    simplify
+    :param text:
+    :return:
+    """
+    modified_text = ""
+    for c in text:
+        modified_text += get_simplified_character(c)
+    return modified_text
+
+```
+
+Example of simplification.
+
+```py
+print(simplify_sinhalese_text("@indika27 @P0dda මිනිස්සු කුණු දාන්නේ මූහූදට නෙ.,.... ඒකයි මෙ ඔක්කොම case. Sighhhhhhhh 😢"))
+```
+
+Output
+
+```sh
+"@indika27 @P0dda මිනිස්සු කුනු දන්නෙ මුහුදට නෙ.,.... එකයි මෙ ඔක්කොම case. Sighhhhhhhh 😢"
+```
+
+## 3. Model
+
+![model](images/model.png)
 
 ## 3. Extending the Data-Set
 
