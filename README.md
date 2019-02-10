@@ -15,19 +15,55 @@ In this research I am expecting to address two main tasks as our objectives. Tho
 - To address the actual need of detecting hate speech in Sinhala language-based posts, introducing a labelled data set of Sinhala posts for future researches with the help of Sinhala language experts.
 - Introduce a Deep Learning - Recurrent Neural Network architecture and pre-processing methods with the implementation. The implementation is done to be easy to understand and with the intention is to make it use in future researches for hate speech detection on Sinhala Language.
 
+## 3. Data-Set
 
-## 2. Requirements to Run the Code Setup
+|    Class      |    Tweets Count    |
+|---------------|-------------------:|
+|    Neutral    |            1081    |
+|    Racist     |             108    |
+|    Sexism     |             222    |
+|    **Total**  |          **1411**  |
 
-- [Python 3](https://www.python.org/download/releases/3.0/)
-- [TensorFlow](https://github.com/tensorflow/tensorflow)
-- [Keras](https://github.com/keras-team/keras)
-- [Mongo DB](https://github.com/mongodb/mongo)
-- Pymongo - `pip install pymongo`
-- Pandas - `pip install pandas`
-- Requests Oauthlib - `pip install requests_oauthlib`
-- Emoji - `pip install emoji`
+![percentages of classes in data-set](data-set/images/data-set.png)
 
-## 3. Extend the Tweet Data
+## 3. Pre-Processing
+
+### 3.1 Sinhala Language
+
+Sinhala language is used by more than 16 million native speakers and constitutionally recognized as the main official language of Sri Lanka and used by over 19 million people. It has developed into its current form over a long period of time with influences from a wide variety of languages including Tamil, Portuguese and English. It belongs to the Indo-Aryan branch of the Indo-European languages. The Sinhala alphabet consists of 61 letters comprising 18 vowels, 41 consonants and 2 semi-consonants.
+
+|    Type               |    Letters                                                                                                                       |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------|
+|    Vowels             |    අ, ආ, ඇ, ඈ, ඉ, ඊ, උ, ඌ, ඍ, ඎ, ඏ, ඐ එ, ඒ, ඓ, ඔ, ඕ, ඖ                                                                           |
+|    Consonants         |    ක, ඛ,  ග, ඝ, ඞ, ඟ, ච, ඡ, ජ, ඣ, ඤ, ඥ, ඦ, ට, ඨ, ඩ, ඪ, ණ, ඬ, ත, ථ, ද, ධ, න, ඳ, ප, ඵ, බ, භ, ම, ඹ, ය, ර, ල, ව, ශ, ෂ, ස, හ, ළ, ෆ    |
+|    Semi-Consonants    |    ං, ඃ                                                                                                                          |
+
+When typing Sinhala letters people can make mistakes. For example, “කෛ” can typed as “ක” + “ෙ” + “ෙ”. Following table shows two different ways writing the word “දෛවය”. Even though these two words seems same computer identify these two words as two different word.
+
+|                    |    Letter Combination             |    Word     |
+|--------------------|-----------------------------------|-------------|
+|    Wrong Word      |    “ද” + “ෙ” + “ෙ” + “ව” + “ය”    |    දෙෙවය    |
+|    Correct Word    |    “ද” + “ෛ” + “ව” + “ය”          |    දෛවය     |
+
+Following python code snippest shows the different of these two words.
+
+```py
+wrong_text = "ද" + "ෙ" + "ෙ" + "ව" + "ය"
+correct_text = "ද" + "ෛ" + "ව" + "ය"
+print("wrong_text: " + wrong_text)
+print("correct_text: " + correct_text)
+print("wrong_text == correct_text: + str(wrong_text == correct_text))
+```
+
+Output of the above python code.
+
+```sh
+wrong_text: දෙෙවය
+correct_text: දෛවය
+wrong_text == correct_text: False
+```
+
+## 3. Extending the Data-Set
 
 ### 3.1 Run the Mongo DB
 
@@ -120,7 +156,18 @@ You can backup collected tweets by running following script.
 mongodump --collection tweets --db db
 ```
 
-## 4. Run the Model
+## 4. Run the Model - Local Setup
+
+### 4.1 Requirements to Run the Code Setup
+
+- [Python 3](https://www.python.org/download/releases/3.0/)
+- [TensorFlow](https://github.com/tensorflow/tensorflow)
+- [Keras](https://github.com/keras-team/keras)
+- [Mongo DB](https://github.com/mongodb/mongo)
+- Pymongo - `pip install pymongo`
+- Pandas - `pip install pandas`
+- Requests Oauthlib - `pip install requests_oauthlib`
+- Emoji - `pip install emoji`
 
 ### 4.1. Training the Model
 
@@ -139,3 +186,6 @@ Run the following script to validate the model. This will use the final results 
 ```bash
 cd classifier/python/classifier; python validate.py
 ```
+
+## 5. Run the Model - Google Colaboratory Setup
+
