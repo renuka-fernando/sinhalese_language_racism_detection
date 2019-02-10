@@ -1,6 +1,6 @@
 # Sinhalese Language based Hate Speech Detection
 
-## 1. Background
+## Background
 
 Advances in communication technology has brought people to one global position. Among them social media platforms play a major role with granting users freedom to speech by allowing them to freely express their thoughts, beliefs, and opinions. Children, adolescents, adults are spending significant amount of time on various social networking sites to connect with others, to share information, and to pursue common interests. Although this make great opportunities such as learn from others, there are some challenges. Racism, trolling, being exposed to large amounts of offensive online contents are such examples. The rapid growth of race hate speech on social media seems to have big impact on society and goodwill of a country.
 
@@ -8,14 +8,39 @@ Social media is the collective of online communications channels dedicated to co
 
 Sri Lanka had a same kind of problem related to social medias in March, 2018 related to an incident happened in Digana, Kandy that occurs due to failure of social media to detect of race speeches and offensive language on comments and posts since they were in Sinhala language. Current tools failed to detect such things and the temporary solution was blocking on Facebook and other social media
 
-## 2. Objectives of the Research
+## Objectives of the Research
 
 In this research I am expecting to address two main tasks as our objectives. Those are mentioned below.
 
 - To address the actual need of detecting hate speech in Sinhala language-based posts, introducing a labelled data set of Sinhala posts for future researches with the help of Sinhala language experts.
 - Introduce a Deep Learning - Recurrent Neural Network architecture and pre-processing methods with the implementation. The implementation is done to be easy to understand and with the intention is to make it use in future researches for hate speech detection on Sinhala Language.
 
-## 3. Data-Set
+## Table of Content
+
+- [1. Data-set](#1-data-set)
+  - [1.1. Data-set](#11-data-labelling)
+- [2. Pre-Processing](#2-pre-processing)
+  - [2.1 Sinhala Language](#21-sinhala-language)
+  - [2.2. Fixing Vowels](#22-fixing-vowels)
+  - [2.3. Simplifying Sinhalese Characters](#23-simplifying-sinhalese-characters)
+- [3. Model](#3-model)
+- [4. Run the Model - Local Setup](#4-run-the-model-local-setup)
+  - [4.1. Requirements to Run the Code Setup](#41-requirements-to-run-the-code-setup)
+  - [4.2. Training the Model](#42-training-the-model)
+  - [4.3. Build Results](#43-build-results)
+- [5. Run the Model - Google Colaboratory Setup](#5-run-the-model-google-colaboratory-setup)
+- [6. Extending the Data-Set](#6-extending-the-data-set)
+  - [6.1. Requirements](#61-requirements)
+  - [6.2. Run the Mongo DB](#62-run-the-mongo-db)
+  - [6.3. Setup Twitter Keys](#63-setup-twitter-keys)
+  - [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query)
+  - [6.5. Query with Tweeter](#65-query-with-tweeter)
+  - [6.6. Create CSV from Mongo DB](#66-create-csv-from-mongo-db)
+  - [6.7. Backup Mongo DB](#67-backup-mongo-db)
+
+## 1. Data-Set
+
+Data collection is done by with using both Twitter Standard  and Premium  search APIs. Tweets were searched with pre-identified key words collected via surveys and experts.
 
 |    Class      |    Tweets Count    |
 |---------------|-------------------:|
@@ -26,9 +51,15 @@ In this research I am expecting to address two main tasks as our objectives. Tho
 
 ![percentages of classes in data-set](data-set/images/data-set.png)
 
-## 3. Pre-Processing
+### 1.1. Data Labelling
 
-### 3.1 Sinhala Language
+Following figure represents the process of data gathering and data labelling. The tweets found imported to Excel which interface with experts (graduates of Department of Political Science, Faculty of Social Science, University of Kelaniya, **K A D Thusitha Pradeep** and **D M M Ruwan Kumara**) to label them.
+
+![data labelling](images/data-labelling.png)
+
+## 2. Pre-Processing
+
+### 2.1. Sinhala Language
 
 Sinhala language is used by more than 16 million native speakers and constitutionally recognized as the main official language of Sri Lanka and used by over 19 million people. It has developed into its current form over a long period of time with influences from a wide variety of languages including Tamil, Portuguese and English. It belongs to the Indo-Aryan branch of the Indo-European languages. The Sinhala alphabet consists of 61 letters comprising 18 vowels, 41 consonants and 2 semi-consonants.
 
@@ -38,7 +69,7 @@ Sinhala language is used by more than 16 million native speakers and constitutio
 |    Consonants         |    ක, ඛ,  ග, ඝ, ඞ, ඟ, ච, ඡ, ජ, ඣ, ඤ, ඥ, ඦ, ට, ඨ, ඩ, ඪ, ණ, ඬ, ත, ථ, ද, ධ, න, ඳ, ප, ඵ, බ, භ, ම, ඹ, ය, ර, ල, ව, ශ, ෂ, ස, හ, ළ, ෆ    |
 |    Semi-Consonants    |    ං, ඃ                                                                                                                          |
 
-### 3.2. Fixing Vowels
+### 2.2. Fixing Vowels
 
 When typing Sinhala letters people can make mistakes. For example, “කෛ” can typed as “ක” + “ෙ” + “ෙ”. Following table shows two different ways writing the word “දෛවය”. Even though these two words seems same computer identify these two words as two different word.
 
@@ -72,7 +103,7 @@ The following images shows different keys for "ෙ" and "ෛ".
 
 The python implementation of vowel fixing can be found [here]( sinhala-preprocessing/python/preprocessing/sinhalese_vowel_letter_fixer.py).
 
-### 3.3. Simplifying Sinhalese Characters
+### 2.3. Simplifying Sinhalese Characters
 
 The textual contents in social networks are often informal, unstructured and even misspelled. With simplifying characters, it is able to identify same word with different misspelled words.
 
@@ -160,9 +191,56 @@ Output
 
 ![model](images/model.png)
 
-## 3. Extending the Data-Set
+This model also uses features, **“users' tendency towards racism or sexism”** (Pitsilis, G. K., Ramampiaro, H., & Langseth, H. (n.d.). Detecting Oﬀensive Language in Tweets Using Deep Learning, 18.)
 
-### 3.1 Run the Mongo DB
+Model is implemented using [Keras](https://github.com/keras-team/keras/).
+[![keras icon](images/keras-icon.png)](https://github.com/keras-team/keras/)
+
+## 4. Run the Model - Local Setup
+
+### 4.1. Requirements to Run the Code Setup
+
+- [Python 3](https://www.python.org/download/releases/3.0/)
+- [TensorFlow](https://github.com/tensorflow/tensorflow)
+- [Keras](https://github.com/keras-team/keras)
+- Pandas - `pip install pandas`
+- Requests Oauthlib - `pip install requests_oauthlib`
+- Emoji - `pip install emoji`
+
+### 4.2. Training the Model
+
+Run the following script to train the model. This will start training the model. Make sure the final CSV file has been placed as `[root directory]/data-set/final-data-set.csv`.
+
+```bash
+cd classifier/python/classifier; python classify.py
+```
+
+This will create an h5 file that contains the model in a directory `[root directory]/classifier/python/classifier/results_x`.
+
+### 4.3. Build Results
+
+Run the following script to validate the model. This will use the final results directory to validate the model, create files associate with scores in the same directory.
+
+```bash
+cd classifier/python/classifier; python validate.py
+```
+
+## 5. Run the Model - Google Colaboratory Setup
+
+![Google Colaboratory](images)
+
+Copy [jupyter_notebook/sinhala_racism_detection.ipynb](jupyter_notebook/sinhala_racism_detection.ipynb) file into your Google Drive and open it with Google Colaboratory. Run the file and authorize it to save results to your drive. It will save results in the directory `sinhala_racism_detection` in your drive.
+
+Copy [jupyter_notebook/sinhala-racism-validation.ipynb](jupyter_notebook/sinhala-racism-validation.ipynb) and run the file in Google Colaboratory.
+
+## 6. Extending the Data-Set
+
+### 6.1. Requirements
+
+- [Mongo DB](https://github.com/mongodb/mongo)
+- Pymongo - `pip install pymongo`
+
+### 6.2. Run the Mongo DB
 
 Run the Mongo DB with following script.
 
@@ -175,7 +253,7 @@ Restore the existing Mongo DB to your environment with running the following scr
 mongorestore [root directory]/data-set/dump
 ```
 
-### 3.2 Setup Twitter Keys
+### 6.3. Setup Twitter Keys
 
 Update the configuration file `twitter-api-reader/python/config/twitter-keys.ini` with your Twitter API keys.
 
@@ -187,7 +265,7 @@ resource_owner_key = <your resource owner key>
 resource_owner_secret = <your resource owner secret>
 ```
 
-### 3.3 Setup Twitter Search Query
+### 6.4. Setup Twitter Search Query
 
 Update the configuration file `twitter-api-reader/python/config/reader-config.ini` with Mongo DB host, port, database name and the collection name.
 
@@ -214,9 +292,9 @@ json_payload = {"query":"උන් OR උං OR සමහර OR අතරින�
     json_payload = {"query":"උන් lang:si OR උං lang:si OR සමහර lang:si","maxResults":"100","fromDate":"201811050000","toDate":"201812030000"}
     ```
 
-### 3.4 Query with Tweeter
+### 6.5. Query with Tweeter
 
-Words used to query is defined in the configurations done in the section **3.3**. Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section **3.1**.
+Words used to query is defined in the configurations done in the section [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query). Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section [6.2. Run the Mongo DB](#62-run-the-mongo-db).
 
 ```bash
 cd twitter-api-reader/python/twitter; python tweets_to_mongo.py s
@@ -233,9 +311,9 @@ example:
 cd twitter-api-reader/python/twitter; python tweets_to_mongo.py p30
 ```
 
-### 3.5 Create CSV from Mongo DB
+### 6.6. Create CSV from Mongo DB
 
-You can create a CSV file from the specified Database and Collection in the configuration file mentioned in the section **3.3**. Run the following script to create the CSV file.
+You can create a CSV file from the specified Database and Collection in the configuration file mentioned in the section [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query). Run the following script to create the CSV file.
 
 ```bash
 cd twitter-api-reader/python/twitter; python mongo_to_csv.py
@@ -245,44 +323,10 @@ The created file can be found as `[root directory]/data-set/data-set.csv`. You c
 
 Place the final CSV file as `[root directory]/data-set/final-data-set.csv`. This is used to train the model.
 
-### 3.6. Backup Mongo DB
+### 6.7. Backup Mongo DB
 
 You can backup collected tweets by running following script.
 
 ```bash
 mongodump --collection tweets --db db
 ```
-
-## 4. Run the Model - Local Setup
-
-### 4.1 Requirements to Run the Code Setup
-
-- [Python 3](https://www.python.org/download/releases/3.0/)
-- [TensorFlow](https://github.com/tensorflow/tensorflow)
-- [Keras](https://github.com/keras-team/keras)
-- [Mongo DB](https://github.com/mongodb/mongo)
-- Pymongo - `pip install pymongo`
-- Pandas - `pip install pandas`
-- Requests Oauthlib - `pip install requests_oauthlib`
-- Emoji - `pip install emoji`
-
-### 4.1. Training the Model
-
-Run the following script to train the model. This will start training the model. Make sure the final CSV file has been placed as `[root directory]/data-set/final-data-set.csv`.
-
-```bash
-cd classifier/python/classifier; python classify.py
-```
-
-This will create an h5 file that contains the model in a directory `[root directory]/classifier/python/classifier/results_x`.
-
-### 4.2. Build Results
-
-Run the following script to validate the model. This will use the final results directory to validate the model, create files associate with scores in the same directory.
-
-```bash
-cd classifier/python/classifier; python validate.py
-```
-
-## 5. Run the Model - Google Colaboratory Setup
-
