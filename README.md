@@ -229,7 +229,7 @@ cd classifier/python/classifier; python validate.py
 
 ![Google Colaboratory](images/colab.png)
 
-You can run the model in Google Colaboratory and store the results in Google Drive. The python code in the jupyter note book will create a directory `sinhala_racism_detection` and will interact only with that directory (I make sure the python script will not read or write to any other directory of your Goole Drive. You can also review the script).
+Without any settings defind in the section [4. Run the Model - Local Setup](#4-run-the-model-local-setup), you can run the model in Google Colaboratory and store the results in Google Drive. The python code in the jupyter note book will create a directory `sinhala_racism_detection` and will interact only with that directory (I make sure the python script will not read or write to any other directory of your Goole Drive. You can also review the script).
 
 1. Copy [jupyter_notebook/sinhala_racism_detection.ipynb](jupyter_notebook/sinhala_racism_detection.ipynb) file into your Google Drive and open it with Google Colaboratory. Run the file and authorize it to save results to your drive.
 
@@ -251,6 +251,10 @@ I have performed five-fold cross validation and calculated the Precision, Recall
 |    Racist     |    108                   |    80                       |    6                          |    22                      |
 |    Sexism     |    222                   |    154                      |    23                         |    45                      |
 |    Total      |    1411                  |    991                      |    136                        |    284                     |
+
+### 6.2 Accuracy and Loss of Folds
+
+
 
 ## 6. Extending the Data-Set
 

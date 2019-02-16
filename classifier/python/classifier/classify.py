@@ -155,7 +155,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     plt.show()
 
     # Saving evolution history of epochs in this fold
-    f = open("%s/history_fold_%d" % (directory, fold), 'w')
+    f = open("%s/history_fold_%d.txt" % (directory, fold), 'w')
     f.write("best_epoch: %d\n" % best_epoch)
     f.write("epoch,training_accuracy,training_loss,validation_accuracy,validation_loss\n")
     for i in range(MAX_EPOCHS):
@@ -184,7 +184,7 @@ for train_n_validation_indexes, test_indexes in k_fold.split(x_corpus, y_corpus_
     output = np.append(output, class_2.reshape(test_indexes.shape[0], 1), axis=1)
     output = np.append(output, class_3.reshape(test_indexes.shape[0], 1), axis=1)
 
-    np.savetxt("%s/test_set_predicted_output_%d" % (directory, fold), X=output, fmt="%s", delimiter=",")
+    np.savetxt("%s/test_set_predicted_output_%d.txt" % (directory, fold), X=output, fmt="%s", delimiter=",")
     logging.info("Fold: %d - Completed" % fold)
     fold += 1
     # end of fold
