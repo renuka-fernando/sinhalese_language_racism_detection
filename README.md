@@ -227,11 +227,30 @@ cd classifier/python/classifier; python validate.py
 
 ## 5. Run the Model - Google Colaboratory Setup
 
-![Google Colaboratory](images)
+![Google Colaboratory](images/colab.png)
 
-Copy [jupyter_notebook/sinhala_racism_detection.ipynb](jupyter_notebook/sinhala_racism_detection.ipynb) file into your Google Drive and open it with Google Colaboratory. Run the file and authorize it to save results to your drive. It will save results in the directory `sinhala_racism_detection` in your drive.
+You can run the model in Google Colaboratory and store the results in Google Drive. The python code in the jupyter note book will create a directory `sinhala_racism_detection` and will interact only with that directory (I make sure the python script will not read or write to any other directory of your Goole Drive. You can also review the script).
 
-Copy [jupyter_notebook/sinhala-racism-validation.ipynb](jupyter_notebook/sinhala-racism-validation.ipynb) and run the file in Google Colaboratory.
+1. Copy [jupyter_notebook/sinhala_racism_detection.ipynb](jupyter_notebook/sinhala_racism_detection.ipynb) file into your Google Drive and open it with Google Colaboratory. Run the file and authorize it to save results to your drive.
+
+1. Copy [jupyter_notebook/sinhala-racism-validation.ipynb](jupyter_notebook/sinhala-racism-validation.ipynb) and run the file in Google Colaboratory.
+
+1. Find your results in the directory `sinhala_racism_detection` in your drive.
+
+## 6. Testing and Results Analysis
+
+### 6.1 Experimental Setting
+
+I have performed five-fold cross validation and calculated the Precision, Recall and F1–Score. Each training fold was split into 88% training and 12% validation, while performance is evaluated over the remaining fold of unseen data. Following diagrams represent the distribution of tweets count among training, validation and testing for a fold.
+
+![Data Set Distribution](images/data-set-distribution.png)
+
+|    Class      |    Total Tweets Count    |    Training Tweets Count    |    Validation Tweets Count    |    Testing Tweets Count    |
+|---------------|--------------------------|-----------------------------|-------------------------------|----------------------------|
+|    Neutral    |    1081                  |    757                      |    107                        |    217                     |
+|    Racist     |    108                   |    80                       |    6                          |    22                      |
+|    Sexism     |    222                   |    154                      |    23                         |    45                      |
+|    Total      |    1411                  |    991                      |    136                        |    284                     |
 
 ## 6. Extending the Data-Set
 
