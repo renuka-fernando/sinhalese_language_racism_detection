@@ -405,3 +405,19 @@ You can backup collected tweets by running following script.
 ```bash
 mongodump --collection tweets --db db
 ```
+
+## REFERENCES
+
+- Badjatiya, P., Gupta, S., Gupta, M., & Varma, V. (2017). Deep Learning for Hate Speech Detection in Tweets. ArXiv:1706.00188 [Cs], 759–760. https://doi.org/10.1145/3041021.3054223
+- Davidson, T., Warmsley, D., Macy, M., & Weber, I. (2017). Automated Hate Speech Detection and the Problem of Offensive Language. ArXiv:1703.04009 [Cs]. Retrieved from http://arxiv.org/abs/1703.04009
+- fastText. (n.d.). Retrieved December 3, 2018, from https://research.fb.com/fasttext
+- Gallege, S. (n.d.). NLP Analysis of Sinhala, 6.
+- Gambäck, B., & Sikdar, U. K. (2017). Using Convolutional Neural Networks to Classify Hate-Speech (pp. 85–90). Association for Computational Linguistics. https://doi.org/10.18653/v1/W17-3013
+- Hatebase.org Search Results for Language Sinhala. (n.d.). Retrieved December 1, 2018, from https://hatebase.org/search_results/language_id%3Dsin
+- nltk.stem package — NLTK 3.4 documentation. (n.d.). Retrieved December 2, 2018, from https://www.nltk.org/api/nltk.stem.html
+- Pitsilis, G. K., Ramampiaro, H., & Langseth, H. (n.d.). Detecting Oﬀensive Language in Tweets Using Deep Learning, 18.
+- Ruwandika, N. D. T., & Weerasinghe, D.-  A. R. (n.d.). Identification of Hate Speech in Social Media, 49.
+- Temporary block on Facebook and other Social Media likely to be lifted - Sri Lanka Latest News. (n.d.). Retrieved January 19, 2019, from https://www.newsfirst.lk/2018/03/10/temporary-block-facebook-social-media-likely-lifted/
+- Waseem, Z. (2016). Are You a Racist or Am I Seeing Things? Annotator Influence on Hate Speech Detection on Twitter. In Proceedings of the First Workshop on NLP and Computational Social Science (pp. 138–142). Austin, Texas: Association for Computational Linguistics. https://doi.org/10.18653/v1/W16-5618
+- Waseem, Z., & Hovy, D. (2016). Hateful Symbols or Hateful People? Predictive Features for Hate Speech Detection on Twitter. In Proceedings of the NAACL Student Research Workshop (pp. 88–93). San Diego, California: Association for Computational Linguistics. https://doi.org/10.18653/v1/N16-2013
+- Wickremesinhe, R., & Hattotuwa, S. (n.d.). A study of hate speech on Facebook surrounding Sri Lanka’s Parliamentary Election of 2015. Retrieved December 4, 2018, from https://www.cpalanka.org/wp-content/uploads/2016/03/Voting-in-Hate-1.pdf
