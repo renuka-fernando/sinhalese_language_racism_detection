@@ -29,14 +29,18 @@ In this research I am expecting to address two main tasks as our objectives. Tho
   - [4.2. Training the Model](#42-training-the-model)
   - [4.3. Build Results](#43-build-results)
 - [5. Run the Model - Google Colaboratory Setup](#5-run-the-model-google-colaboratory-setup)
-- [6. Extending the Data-Set](#6-extending-the-data-set)
-  - [6.1. Requirements](#61-requirements)
-  - [6.2. Run the Mongo DB](#62-run-the-mongo-db)
-  - [6.3. Setup Twitter Keys](#63-setup-twitter-keys)
-  - [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query)
-  - [6.5. Query with Tweeter](#65-query-with-tweeter)
-  - [6.6. Create CSV from Mongo DB](#66-create-csv-from-mongo-db)
-  - [6.7. Backup Mongo DB](#67-backup-mongo-db)
+- [6. Testing and Results Analysis](#6-testing-and-results-analysis)
+  - [6.1. Experimental Setting](#61-experimental-setting)
+  - [6.2. Accuracy and Loss of Folds](#62-accuracy-and-loss-of-folds)
+  - [6.3. Confusion Matrices and Results](#63-confusion-matrices-and-results)
+- [7. Extending the Data-Set](#7-extending-the-data-set)
+  - [7.1. Requirements](#71-requirements)
+  - [7.2. Run the Mongo DB](#72-run-the-mongo-db)
+  - [7.3. Setup Twitter Keys](#73-setup-twitter-keys)
+  - [7.4. Setup Twitter Search Query](#74-setup-twitter-search-query)
+  - [7.5. Query with Tweeter](#75-query-with-tweeter)
+  - [7.6. Create CSV from Mongo DB](#77-create-csv-from-mongo-db)
+  - [7.7. Backup Mongo DB](#77-backup-mongo-db)
 
 ## 1. Data-Set
 
@@ -239,7 +243,7 @@ Without any settings defind in the section [4. Run the Model - Local Setup](#4-r
 
 ## 6. Testing and Results Analysis
 
-### 6.1 Experimental Setting
+### 6.1. Experimental Setting
 
 I have performed five-fold cross validation and calculated the Precision, Recall and F1–Score. Each training fold was split into 88% training and 12% validation, while performance is evaluated over the remaining fold of unseen data. Following diagrams represent the distribution of tweets count among training, validation and testing for a fold.
 
@@ -252,18 +256,56 @@ I have performed five-fold cross validation and calculated the Precision, Recall
 |    Sexism     |    222                   |    154                      |    23                         |    45                      |
 |    Total      |    1411                  |    991                      |    136                        |    284                     |
 
-### 6.2 Accuracy and Loss of Folds
+### 6.2. Accuracy and Loss of Folds
 
+|    Fold    |    Accuracy                                                                           |    Loss                                                                      |
+|------------|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| 0          | ![Accuracy Fold 0](classifier/python/classifier/results_0/plot_model_accuracy_0.png)  | ![Loss Fold 0](classifier/python/classifier/results_0/plot_model_loss_0.png) |
+| 1          | ![Accuracy Fold 1](classifier/python/classifier/results_0/plot_model_accuracy_1.png)  | ![Loss Fold 1](classifier/python/classifier/results_0/plot_model_loss_1.png) |
+| 2          |  ![Accuracy Fold 2](classifier/python/classifier/results_0/plot_model_accuracy_2.png) | ![Loss Fold 2](classifier/python/classifier/results_0/plot_model_loss_2.png) |
+| 3          |  ![Accuracy Fold 3](classifier/python/classifier/results_0/plot_model_accuracy_3.png) | ![Loss Fold 3](classifier/python/classifier/results_0/plot_model_loss_3.png) |
+| 4          |  ![Accuracy Fold 4](classifier/python/classifier/results_0/plot_model_accuracy_4.png) | ![Loss Fold 4](classifier/python/classifier/results_0/plot_model_loss_4.png) |
 
+### 6.3. Confusion Matrices and Results
 
-## 6. Extending the Data-Set
+The following table represents precision, recall and F1 score according to the confusion matrix of each fold of the model.
 
-### 6.1. Requirements
+|    Fold    |    Class      |    Precision    |    Recall    |    F1 score    |
+|------------|---------------|-----------------|--------------|----------------|
+| 0          |    Neutral    |    0.9422       |    0.9770    |    0.9593      |
+|            |    Racist     |    0.9444       |    0.7727    |    0.8500      |
+|            |    Sexism     |    0.8537       |    0.7778    |    0.8140      |
+| 1          |    Neutral    |    0.9461       |    0.8935    |    0.9190      |
+|            |    Racist     |    0.6800       |    0.7727    |    0.7234      |
+|            |    Sexism     |    0.6481       |    0.7778    |    0.7071      |
+| 2          |    Neutral    |    0.8866       |    0.9769    |    0.9296      |
+|            |    Racist     |    0.8333       |    0.6818    |    0.7500      |
+|            |    Sexism     |    0.8077       |    0.4773    |    0.6000      |
+| 3          |    Neutral    |    0.9352       |    0.9352    |    0.9352      |
+|            |    Racist     |    0.6400       |    0.7619    |    0.6957      |
+|            |    Sexism     |    0.7250       |    0.6591    |    0.6905      |
+| 4          |    Neutral    |    0.8908       |    0.9444    |    0.9168      |
+|            |    Racist     |    1.0000       |    0.5714    |    0.7272      |
+|            |    Sexism     |    0.7000       |    0.6364    |    0.6667      |
+
+Final F1 score for each class was calculated as getting average values of F1 scores of each fold and final F1 score value derived as the weighted mean of the separate F1 scores.
+$F=(F_N|N|+F_R|R|+F_S|S|)/(|N|+|R|+|S|)$ where $|N|=1081, |R|=108$ and $|S|=222$ are tweets count of classes Neutral, Racist and Sexism. Following table represents calculated overall F1 score.
+
+| Class   | F1 score     |
+|---------|--------------|
+| Neutral | $F_N=0.9320$ |
+| Racist  | $F_R=0.7493$ |
+| Sexism  | $F_S=0.6957$ |
+| Overall |  $F=0.8808$  |
+
+## 7. Extending the Data-Set
+
+### 7.1. Requirements
 
 - [Mongo DB](https://github.com/mongodb/mongo)
 - Pymongo - `pip install pymongo`
 
-### 6.2. Run the Mongo DB
+### 7.2. Run the Mongo DB
 
 Run the Mongo DB with following script.
 
@@ -276,7 +318,7 @@ Restore the existing Mongo DB to your environment with running the following scr
 mongorestore [root directory]/data-set/dump
 ```
 
-### 6.3. Setup Twitter Keys
+### 7.3. Setup Twitter Keys
 
 Update the configuration file `twitter-api-reader/python/config/twitter-keys.ini` with your Twitter API keys.
 
@@ -288,7 +330,7 @@ resource_owner_key = <your resource owner key>
 resource_owner_secret = <your resource owner secret>
 ```
 
-### 6.4. Setup Twitter Search Query
+### 7.4. Setup Twitter Search Query
 
 Update the configuration file `twitter-api-reader/python/config/reader-config.ini` with Mongo DB host, port, database name and the collection name.
 
@@ -315,9 +357,9 @@ json_payload = {"query":"උන් OR උං OR සමහර OR අතරින�
     json_payload = {"query":"උන් lang:si OR උං lang:si OR සමහර lang:si","maxResults":"100","fromDate":"201811050000","toDate":"201812030000"}
     ```
 
-### 6.5. Query with Tweeter
+### 7.5. Query with Tweeter
 
-Words used to query is defined in the configurations done in the section [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query). Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section [6.2. Run the Mongo DB](#62-run-the-mongo-db).
+Words used to query is defined in the configurations done in the section [7.4. Setup Twitter Search Query](#74-setup-twitter-search-query). Run the following script to run the `tweets_to_mongo.py` file and query with standard Twitter API. Make sure you have an internet connection and have run the Mongo DB as in section [7.2. Run the Mongo DB](#72-run-the-mongo-db).
 
 ```bash
 cd twitter-api-reader/python/twitter; python tweets_to_mongo.py s
@@ -334,9 +376,9 @@ example:
 cd twitter-api-reader/python/twitter; python tweets_to_mongo.py p30
 ```
 
-### 6.6. Create CSV from Mongo DB
+### 7.6. Create CSV from Mongo DB
 
-You can create a CSV file from the specified Database and Collection in the configuration file mentioned in the section [6.4. Setup Twitter Search Query](#64-setup-twitter-search-query). Run the following script to create the CSV file.
+You can create a CSV file from the specified Database and Collection in the configuration file mentioned in the section [7.4. Setup Twitter Search Query](#74-setup-twitter-search-query). Run the following script to create the CSV file.
 
 ```bash
 cd twitter-api-reader/python/twitter; python mongo_to_csv.py
@@ -346,7 +388,7 @@ The created file can be found as `[root directory]/data-set/data-set.csv`. You c
 
 Place the final CSV file as `[root directory]/data-set/final-data-set.csv`. This is used to train the model.
 
-### 6.7. Backup Mongo DB
+### 7.7. Backup Mongo DB
 
 You can backup collected tweets by running following script.
 
