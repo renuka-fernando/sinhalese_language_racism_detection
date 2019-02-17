@@ -2,6 +2,3 @@
 venv/
 __pycache__/
 data-set/mongo-db/
-
-# remove this later with removing secrets
-twitter-keys.ini
