@@ -268,6 +268,16 @@ I have performed five-fold cross validation and calculated the Precision, Recall
 
 ### 6.3. Confusion Matrices and Results
 
+The following table represents the confusion matrices of each fold.
+
+|    Fold    |    Confusion Matrix                                                       |
+|------------|---------------------------------------------------------------------------|
+|    0       | ![Confusion Matrix for Fold 0](images/confusion-matrices/confusion_0.png) |
+|    1       | ![Confusion Matrix for Fold 1](images/confusion-matrices/confusion_1.png) |
+|    2       | ![Confusion Matrix for Fold 2](images/confusion-matrices/confusion_2.png) |
+|    3       | ![Confusion Matrix for Fold 3](images/confusion-matrices/confusion_3.png) |
+|    4       | ![Confusion Matrix for Fold 4](images/confusion-matrices/confusion_4.png) |
+
 The following table represents precision, recall and F1 score according to the confusion matrix of each fold of the model.
 
 |    Fold    |    Class      |    Precision    |    Recall    |    F1 score    |
