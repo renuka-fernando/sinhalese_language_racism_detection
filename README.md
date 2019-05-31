@@ -1,5 +1,7 @@
 # Sinhalese Language based Hate Speech Detection
 
+This project is done as a partial fulfilment of the requirements for the degree of Bachelor of Science Honours in Software Engineering (B.Sc.SE) under the supervision of Dr. Laalitha Liyanage.
+
 ## Background
 
 Advances in communication technology has brought people to one global position. Among them social media platforms play a major role with granting users freedom to speech by allowing them to freely express their thoughts, beliefs, and opinions. Children, adolescents, adults are spending significant amount of time on various social networking sites to connect with others, to share information, and to pursue common interests. Although this make great opportunities such as learn from others, there are some challenges. Racism, trolling, being exposed to large amounts of offensive online contents are such examples. The rapid growth of race hate speech on social media seems to have big impact on society and goodwill of a country.
@@ -17,30 +19,35 @@ In this research I am expecting to address two main tasks as our objectives. Tho
 
 ## Table of Content
 
-- [1. Data-set](#1-data-set)
-  - [1.1. Data-set](#11-data-labelling)
-- [2. Pre-Processing](#2-pre-processing)
-  - [2.1 Sinhala Language](#21-sinhala-language)
-  - [2.2. Fixing Vowels](#22-fixing-vowels)
-  - [2.3. Simplifying Sinhalese Characters](#23-simplifying-sinhalese-characters)
-- [3. Model](#3-model)
-- [4. Run the Model - Local Setup](#4-run-the-model-local-setup)
-  - [4.1. Requirements to Run the Code Setup](#41-requirements-to-run-the-code-setup)
-  - [4.2. Training the Model](#42-training-the-model)
-  - [4.3. Build Results](#43-build-results)
-- [5. Run the Model - Google Colaboratory Setup](#5-run-the-model-google-colaboratory-setup)
-- [6. Testing and Results Analysis](#6-testing-and-results-analysis)
-  - [6.1. Experimental Setting](#61-experimental-setting)
-  - [6.2. Accuracy and Loss of Folds](#62-accuracy-and-loss-of-folds)
-  - [6.3. Confusion Matrices and Results](#63-confusion-matrices-and-results)
-- [7. Extending the Data-Set](#7-extending-the-data-set)
-  - [7.1. Requirements](#71-requirements)
-  - [7.2. Run the Mongo DB](#72-run-the-mongo-db)
-  - [7.3. Setup Twitter Keys](#73-setup-twitter-keys)
-  - [7.4. Setup Twitter Search Query](#74-setup-twitter-search-query)
-  - [7.5. Query with Tweeter](#75-query-with-tweeter)
-  - [7.6. Create CSV from Mongo DB](#77-create-csv-from-mongo-db)
-  - [7.7. Backup Mongo DB](#77-backup-mongo-db)
+- [Sinhalese Language based Hate Speech Detection](#sinhalese-language-based-hate-speech-detection)
+  - [Background](#background)
+  - [Objectives of the Research](#objectives-of-the-research)
+  - [Table of Content](#table-of-content)
+  - [1. Data-Set](#1-data-set)
+    - [1.1. Data Labelling](#11-data-labelling)
+  - [2. Pre-Processing](#2-pre-processing)
+    - [2.1. Sinhala Language](#21-sinhala-language)
+    - [2.2. Fixing Vowels](#22-fixing-vowels)
+    - [2.3. Simplifying Sinhalese Characters](#23-simplifying-sinhalese-characters)
+  - [3. Model](#3-model)
+  - [4. Run the Model - Local Setup](#4-run-the-model---local-setup)
+    - [4.1. Requirements to Run the Code Setup](#41-requirements-to-run-the-code-setup)
+    - [4.2. Training the Model](#42-training-the-model)
+    - [4.3. Build Results](#43-build-results)
+  - [5. Run the Model - Google Colaboratory Setup](#5-run-the-model---google-colaboratory-setup)
+  - [6. Testing and Results Analysis](#6-testing-and-results-analysis)
+    - [6.1. Experimental Setting](#61-experimental-setting)
+    - [6.2. Accuracy and Loss of Folds](#62-accuracy-and-loss-of-folds)
+    - [6.3. Confusion Matrices and Results](#63-confusion-matrices-and-results)
+  - [7. Extending the Data-Set](#7-extending-the-data-set)
+    - [7.1. Requirements](#71-requirements)
+    - [7.2. Run the Mongo DB](#72-run-the-mongo-db)
+    - [7.3. Setup Twitter Keys](#73-setup-twitter-keys)
+    - [7.4. Setup Twitter Search Query](#74-setup-twitter-search-query)
+    - [7.5. Query with Tweeter](#75-query-with-tweeter)
+    - [7.6. Create CSV from Mongo DB](#76-create-csv-from-mongo-db)
+    - [7.7. Backup Mongo DB](#77-backup-mongo-db)
+  - [REFERENCES](#references)
 
 ## 1. Data-Set
 
@@ -299,7 +306,7 @@ The following table represents precision, recall and F1 score according to the c
 |            |    Sexism     |    0.7000       |    0.6364    |    0.6667      |
 
 Final F1 score for each class was calculated as getting average values of F1 scores of each fold and final F1 score value derived as the weighted mean of the separate F1 scores.
-$F=(F_N|N|+F_R|R|+F_S|S|)/(|N|+|R|+|S|)$ where $|N|=1081, |R|=108$ and $|S|=222$ are tweets count of classes Neutral, Racist and Sexism. Following table represents calculated overall F1 score.
+$F=\frac{F_N|N|+F_R|R|+F_S|S|}{|N|+|R|+|S|}$ where $|N|=1081, |R|=108$ and $|S|=222$ are tweets count of classes Neutral, Racist and Sexism. Following table represents calculated overall F1 score.
 
 | Class   | F1 score     |
 |---------|--------------|
